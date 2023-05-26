@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import { Button, Modal, Input } from '@mui/material';
+import React from "react";
+import { Button, Input, Modal } from "@mui/material";
 import { makeStyles } from '@mui/styles';
-
+import {useState} from 'react';
 
 
 function getModalStyle(){
