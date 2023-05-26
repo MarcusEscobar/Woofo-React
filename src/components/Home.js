@@ -40,13 +40,7 @@ const Home = () => {
         <Modal open={openSignup} onClose={()=>{setOpenSignup(false)}}>
             <div style={modalStyle} className={classes.paper}>
                 <form className='app__signup'>
-                    <center>
-                        <img
-                        className='app__headerImage'
-                        src={require('./static/LOGINSmallT.png')}
-                        alt='logo'
-                        />
-                    </center>
+                   
                     <Input
                         placeholder='Name'
                         type='text'
@@ -71,12 +65,7 @@ const Home = () => {
         </Modal>
 
         <div className='app__header'>
-            <img
-                className='app__headerImage'
-                src={require('./static/LOGINSmallT.png')}
-                alt='logo'
-            />
-
+            
             <div>
               <Button>Sign In</Button>
               <span>&nbsp;&nbsp;</span>
