@@ -125,3 +125,6 @@ input[type=file] {
   display: inline-block;
   cursor: pointer;
 }
+.Hide{
+  display: none;
+}
