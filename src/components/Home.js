@@ -4,6 +4,10 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth'
 import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
+import AddPost from "./AddPost";
+import Posts from "./Posts";
+import { keyframes } from "@emotion/react";
+import { CancelTwoTone } from "@material-ui/icons";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDzRbVbrB7ZjJw-HylA5HM9DZ8Taf0eiiI",
@@ -18,6 +22,8 @@ const firebaseConfig = {
   // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth()
+const storage = firebase.storage()
+const db = app.firestore()
 
 
 const Home = () => {
@@ -26,6 +32,10 @@ const Home = () => {
   const [email,setEmail] = useState('')
   const [password,setPassord] = useState('')
   const [user, setuser] = useState(null)
+  const [posts, setPosts] = useState([])
+
+  console.log('esse poest',posts)
+const ShowFeed = true
 
 const signup = (e) =>{
     e.preventDefault()
@@ -45,10 +55,10 @@ const signup = (e) =>{
 
 const signin = (e) =>{
     e.preventDefault()
-    const Id_Div_Login = document.getElementById('class_Div_Login')
+    const Id_Div_Login = document.getElementById('class_Div_Login');
     const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-    Id_Div_Login.classList.add('Hide')
-    Id_Div_Cadastro.classList.add('Hide')
+    Id_Div_Login.classList.add('Hide');
+    Id_Div_Cadastro.classList.add('Hide');
     auth.signInWithEmailAndPassword(email,password).then(()=>{
         const Id_Div_Login = document.getElementById('class_Div_Login')
         const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
@@ -63,7 +73,7 @@ useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
             if(authuser) {
                 setuser(authuser)
-                console.log(authuser)
+                
             }
             else{
                 setuser(null)
@@ -74,75 +84,110 @@ useEffect(()=>{
     };
 }, [])
 
+useEffect(()=>{
+    db.collection("posts")
+    .orderBy("timestamp", 'desc').
+    onSnapshot((snapshot)=>{
+        setPosts(
+            snapshot.docs.map((doc)=> ({
+                id: doc.id,
+                post: doc.data(),
+            }))
+        );
+    });
+},[]);
+
   return (
+<body>
     <div className='app'>
-    
+
         <div className='app__header'>
             
             <div>
                 <img
                 src={require('./static/LOGINSmallT.png')}
                 />
+                
             </div>
-            <h1>WOOFO</h1>
             
-            {user ? <>
-            <button onClick={()=>{
-                const Id_Div_Post = document.getElementById('class_Div_Post')
-                Id_Div_Post.classList.remove('Hide')
-
-            }}>Postar</button>
-            <h1>Bem vindo {user.displayName}</h1>
-            <button onClick={()=>{ 
-                const Id_Div_Post = document.getElementById('class_Div_Post')
-                Id_Div_Post.classList.add('Hide')
-                auth.signOut()
-                 }} >Logout</button>
+            {user ? <> {/* User Logado */}
+            <div className="ButtonPost_Div" >
+                <button className="ButtonPost" onClick={()=>{
+                    const show_Id_Form_Div_Envio= document.getElementById('Id_Div_form_envio');
+                    show_Id_Form_Div_Envio.classList.remove('Hide');
+                    const Hide_Id_Div_feed= document.getElementById('Id_Div_Feed');
+                    Hide_Id_Div_feed.classList.add('Hide');
+                    }}>Postar</button>
+            </div>
+            <div className="User_LogOut_Div" >
+                <p className="WelcomeUser">Bem vindo {user.displayName}</p>
+                <button className="ButtonHead" onClick={()=>{ 
+                    
+                    auth.signOut()}} >Logout</button>
+            </div>
             </>:<>
-            <button onClick={()=>{
-                const Id_Div_Login = document.getElementById('class_Div_Login')
-                const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-                Id_Div_Login.classList.remove('Hide')
-                Id_Div_Cadastro.classList.add('Hide')
-            }}>Logar</button>
-
-            <button onClick={()=>{
-                const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-                const Id_Div_Login = document.getElementById('class_Div_Login')
-                Id_Div_Cadastro.classList.remove('Hide')
-                Id_Div_Login.classList.add('Hide')
-            }}>Cadastro</button>
+            <div>
+                <button className="ButtonHead" onClick={()=>{
+                    const Id_Div_Login = document.getElementById('class_Div_Login')
+                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
+                    Id_Div_Login.classList.remove('Hide')
+                    Id_Div_Cadastro.classList.add('Hide')
+                }}>Login</button>
+                    <span>&nbsp;&nbsp;</span>
+                <button className="ButtonHead" onClick={()=>{
+                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
+                    const Id_Div_Login = document.getElementById('class_Div_Login')
+                    Id_Div_Cadastro.classList.remove('Hide')
+                    Id_Div_Login.classList.add('Hide')
+                    
+                }}>Cadastro</button>
+            </div>
             </>
             }
-        
         </div>
-        <div id="class_Div_Cadastro" className="Hide">
-            <h1>Sign In</h1>
-            <form className="signup">
-                <input placeholder='Nome' type="text" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
-                <input placeholder='Email' type="email" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
-                <input placeholder='Senha' type="password" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                <button type="submit" onClick={signup}>Sign Up</button>
-            </form>
-        </div>
-        <div id="class_Div_Login" className="Hide">
-            <h1>Sign Up</h1>
-            <form className="signin">
-                <input placeholder='Email' type="email" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
-                <input placeholder='Senha' type="password" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                <button type="submit" onClick={signin}>Sign In</button>
-            </form>
-        </div>
-        <div id="class_Div_Post" className="Hide">
-            <form id='post_Form'>
-                <h2>Postar foto</h2>   
-                <label for="image" class="labelInput">Escolha uma foto:</label>
-                <input type="file" name="image" id="image" accept="image/*"/>
-                <button type="submit">Postar</button>
-            </form>
 
-        </div>
+        {user && user.displayName ? <>
+            <div id="Id_Div_form_envio" class='Hide'>
+                <AddPost username={ user.displayName } />
+            </div>     
+            <div id='Id_Div_Feed' className="feed">
+                {posts.map(({id, post}) => (
+                    <Posts
+                        key={id}
+                        postId= {id}    
+                        user={user}  
+                        userName={post.userName}
+                        caption={post.caption}
+                        imageURL={post.imageURL}
+                    />))}
+            </div>
+                
+        </> :
+            <>
+                <div className="UserCred">
+                    <div id="class_Div_Cadastro" className="Hide">
+                        <h1 class="titulo-cadastro">Vamos começar a aventura.</h1>
+                        <form className="signup">
+                            <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
+                            <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
+                            <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                            <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
+                        </form>
+                    </div>
+                    <div id="class_Div_Login">
+                    <h1 class="titulo">Bem-vindo(a) ao Woofo!</h1>
+                    <p class="paragrafo-login">A rede para seu melhor amigo.</p>
+                        <form className="signin">
+                            <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span>&nbsp;</span>
+                            <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                            <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
+                        </form>
+                    </div>
+                </div>
+            </>}
+
     </div>
+</body>
   )
 }
 
