@@ -6,18 +6,8 @@ import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
 import AddPost from "./AddPost";
 import Posts from "./Posts";
-import { keyframes } from "@emotion/react";
-import { CancelTwoTone } from "@material-ui/icons";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDzRbVbrB7ZjJw-HylA5HM9DZ8Taf0eiiI",
-    authDomain: "woof0-75c1f.firebaseapp.com",
-    projectId: "woof0-75c1f",
-    storageBucket: "woof0-75c1f.appspot.com",
-    messagingSenderId: "10079225691",
-    appId: "1:10079225691:web:a8c0e222346ef945a4bc7e",
-    measurementId: "G-4R28M6JFQ4"
-  };
+import {firebaseConfig} from './config.js'
   
   // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
@@ -33,10 +23,10 @@ const Home = () => {
   const [password,setPassord] = useState('')
   const [user, setuser] = useState(null)
   const [posts, setPosts] = useState([])
+  const [avatar,setavatar] = useState(null)
+console.log(user)
 
-  console.log('esse poest',posts)
-const ShowFeed = true
-
+db.collection('Users')
 const signup = (e) =>{
     e.preventDefault()
     auth.createUserWithEmailAndPassword(email, password)
@@ -45,12 +35,19 @@ const signup = (e) =>{
             const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
             Id_Div_Login.classList.add('Hide')
             Id_Div_Cadastro.classList.add('Hide')
+            db.collection("Users").doc(username).set({
+                photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2F2.png?alt=media&token=9c62023a-70bb-406e-aec8-6775151b5b17",
+                nome: username,
+                email: email,
+            })
+
             return authUser.user.updateProfile({
                 displayName:username,
             })
             
-        })
-        .catch((e)=>alert(e.message))
+        }).then(()=>{
+            window.location.reload()
+        }).catch((e)=>alert(e.message))
 }
 
 const signin = (e) =>{
@@ -97,18 +94,36 @@ useEffect(()=>{
     });
 },[]);
 
-  return (
-<body>
-    <div className='app'>
+const MudarAvatar=()=>{
+    storage.ref(`Avatares/${avatar.name}`).put(avatar).then(()=>{
+        console.log('Foto Enviada')
+        storage.ref("Avatares").child(avatar.name).getDownloadURL().then((url)=>{
+            console.log('Url:', url)
+            db.collection('Users').doc(user.displayName).update({
+                photo:url
+            })
 
+        })
+
+    })   
+}
+
+return (
+    <div className='app'>
+            <div className='Hide'>   
+                <input type='file' onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
+                <button onClick={MudarAvatar}>Button</button>           
+            </div>
         <div className='app__header'>
+
             
-            <div>
+            <div className="div__img">
                 <img
                 src={require('./static/LOGINSmallT.png')}
-                />
+                onClick={()=>{}} />
                 
             </div>
+
             
             {user ? <> {/* User Logado */}
             <div className="ButtonPost_Div" >
@@ -116,7 +131,7 @@ useEffect(()=>{
                     const show_Id_Form_Div_Envio= document.getElementById('Id_Div_form_envio');
                     show_Id_Form_Div_Envio.classList.remove('Hide');
                     const Hide_Id_Div_feed= document.getElementById('Id_Div_Feed');
-                    Hide_Id_Div_feed.classList.add('Hide');
+                    Hide_Id_Div_feed.style.display='none'
                     }}>Postar</button>
             </div>
             <div className="User_LogOut_Div" >
@@ -145,28 +160,31 @@ useEffect(()=>{
             </>
             }
         </div>
-
         {user && user.displayName ? <>
-            <div id="Id_Div_form_envio" class='Hide'>
+            <div id="Id_Div_form_envio" className='Hide'>
                 <AddPost username={ user.displayName } />
-            </div>     
+            </div>               
             <div id='Id_Div_Feed' className="feed">
-                {posts.map(({id, post}) => (
-                    <Posts
-                        key={id}
-                        postId= {id}    
-                        user={user}  
-                        userName={post.userName}
-                        caption={post.caption}
-                        imageURL={post.imageURL}
-                    />))}
-            </div>
                 
+                {posts.map(({id, post}) => (
+                 
+                 <Posts
+                     info={db.collection('Users').doc(`${post.userName}`).get()}
+                     foto={user.photoURL}
+                     key={id}
+                     postId= {id}    
+                     user={user}  
+                     userName={post.userName}
+                     caption={post.caption}
+                     imageURL={post.imageURL}
+                 />))}
+            </div>    
+
         </> :
             <>
                 <div className="UserCred">
                     <div id="class_Div_Cadastro" className="Hide">
-                        <h1 class="titulo-cadastro">Vamos começar a aventura.</h1>
+                        <h1 className="titulo-cadastro">Vamos começar a aventura.</h1>
                         <form className="signup">
                             <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
                             <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
@@ -175,8 +193,8 @@ useEffect(()=>{
                         </form>
                     </div>
                     <div id="class_Div_Login">
-                    <h1 class="titulo">Bem-vindo(a) ao Woofo!</h1>
-                    <p class="paragrafo-login">A rede para seu melhor amigo.</p>
+                    <h1 className="titulo">Bem-vindo(a) ao Woofo!</h1>
+                    <p className="paragrafo-login">A rede para seu melhor amigo.</p>
                         <form className="signin">
                             <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span>&nbsp;</span>
                             <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
@@ -187,7 +205,6 @@ useEffect(()=>{
             </>}
 
     </div>
-</body>
   )
 }
 
