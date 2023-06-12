@@ -41,45 +41,28 @@ const signup = (e) =>{
             db.collection("Users").doc(username).set({
                 photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2F2.png?alt=media&token=9c62023a-70bb-406e-aec8-6775151b5b17",
                 nome: username,
-                email: email,
-            })
-
+                email: email,})
             return authUser.user.updateProfile({
-                displayName:username,
-                
-            })
-            
+                displayName:username,})
         }).then(()=>{
             window.location.reload()
-        }).catch((e)=>alert(e.message))
-}
-
+        }).catch((e)=>alert(e.message))}
 const signin = (e) =>{
     e.preventDefault()
     auth.signInWithEmailAndPassword(email,password).then(()=>{
         const Id_Div_Login = document.getElementById('class_Div_Login')
         const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
         Id_Div_Login.classList.add('Hide')
-        Id_Div_Cadastro.classList.add('Hide')
-    })
-    .catch((e)=>alert(e.message))
-}
-
+        Id_Div_Cadastro.classList.add('Hide')})
+    .catch((e)=>alert(e.message))}
 useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
             if(authuser) {
-                setuser(authuser)
-                
-            }
+                setuser(authuser)}
             else{
-                setuser(null)
-            }
-        })
+                setuser(null)}})
     return()=>{
-        unsubscribe()
-    };
-}, [])
-
+        unsubscribe()};}, [])
 useEffect(()=>{
     db.collection("posts")
     .orderBy("timestamp", 'desc').
@@ -88,39 +71,24 @@ useEffect(()=>{
             snapshot.docs.map((doc)=> ({
                 id: doc.id,
                 post: doc.data(),
-            }))
-        );
-    });
-},[]);
-
+            })));});},[]);
 const MudarAvatar=()=>{
     storage.ref(`Avatares/${avatar.name}`).put(avatar).then(()=>{
         console.log('Foto Enviada')
         storage.ref("Avatares").child(avatar.name).getDownloadURL().then((url)=>{
             console.log('Url:', url)
             db.collection('Users').doc(user.displayName).update({
-                photo:url
-            })
-
-        })
-
-    })   
-}
-
+                photo:url})})})}
 return (
     <div className='app'>
-
     {home ? <>
     <button onClick={()=>{setHome(false)}}>Inverter</button>
         <div className='app__header'>
             <div className="div__img">
                 <img
                 src={require('./static/LOGINSmallT.png')}
-                onClick={()=>{window.location.reload()}} />
-                
+                onClick={()=>{window.location.reload()}} />         
             </div>
-
-            
             {user ? <> {/* User Logado? */}
             <div className="ButtonPost_Div" >
                 <button className="ButtonPost" onClick={()=>{
@@ -130,7 +98,6 @@ return (
             <div className="User_LogOut_Div" >
                 <p className="WelcomeUser">Bem vindo {user.displayName}</p>
                 <button className="ButtonHead" onClick={()=>{ 
-                    
                     auth.signOut()}} >Logout</button>
             </div>
             </>:<>
@@ -149,8 +116,7 @@ return (
                     Id_Div_Login.classList.add('Hide')
                 }}>Cadastro</button>
             </div>
-            </>
-            }
+            </>}
         </div>
         {user && user.displayName ? <>
             {postando ? <>
@@ -203,7 +169,6 @@ return (
             </div>
     </>}
     </div>
-  )
-}
+)}
 
 export default Home;
