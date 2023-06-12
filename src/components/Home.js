@@ -6,6 +6,7 @@ import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
 import AddPost from "./AddPost";
 import Posts from "./Posts";
+import Perfil from './Perfil';
 
 import {firebaseConfig} from './config.js'
   
@@ -24,6 +25,8 @@ const Home = () => {
   const [user, setuser] = useState(null)
   const [posts, setPosts] = useState([])
   const [avatar,setavatar] = useState(null)
+  const [postando, setPostando]= useState(false)
+  const [home, setHome] = useState(true)
 console.log(user)
 
 db.collection('Users')
@@ -43,6 +46,7 @@ const signup = (e) =>{
 
             return authUser.user.updateProfile({
                 displayName:username,
+                
             })
             
         }).then(()=>{
@@ -52,16 +56,11 @@ const signup = (e) =>{
 
 const signin = (e) =>{
     e.preventDefault()
-    const Id_Div_Login = document.getElementById('class_Div_Login');
-    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-    Id_Div_Login.classList.add('Hide');
-    Id_Div_Cadastro.classList.add('Hide');
     auth.signInWithEmailAndPassword(email,password).then(()=>{
         const Id_Div_Login = document.getElementById('class_Div_Login')
         const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
         Id_Div_Login.classList.add('Hide')
         Id_Div_Cadastro.classList.add('Hide')
-
     })
     .catch((e)=>alert(e.message))
 }
@@ -110,28 +109,22 @@ const MudarAvatar=()=>{
 
 return (
     <div className='app'>
-            <div className='Hide'>   
-                <input type='file' onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
-                <button onClick={MudarAvatar}>Button</button>           
-            </div>
-        <div className='app__header'>
 
-            
+    {home ? <>
+    <button onClick={()=>{setHome(false)}}>Inverter</button>
+        <div className='app__header'>
             <div className="div__img">
                 <img
                 src={require('./static/LOGINSmallT.png')}
-                onClick={()=>{}} />
+                onClick={()=>{window.location.reload()}} />
                 
             </div>
 
             
-            {user ? <> {/* User Logado */}
+            {user ? <> {/* User Logado? */}
             <div className="ButtonPost_Div" >
                 <button className="ButtonPost" onClick={()=>{
-                    const show_Id_Form_Div_Envio= document.getElementById('Id_Div_form_envio');
-                    show_Id_Form_Div_Envio.classList.remove('Hide');
-                    const Hide_Id_Div_feed= document.getElementById('Id_Div_Feed');
-                    Hide_Id_Div_feed.style.display='none'
+                    setPostando(true)
                     }}>Postar</button>
             </div>
             <div className="User_LogOut_Div" >
@@ -144,30 +137,29 @@ return (
             <div>
                 <button className="ButtonHead" onClick={()=>{
                     const Id_Div_Login = document.getElementById('class_Div_Login')
-                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
                     Id_Div_Login.classList.remove('Hide')
+                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
                     Id_Div_Cadastro.classList.add('Hide')
                 }}>Login</button>
                     <span>&nbsp;&nbsp;</span>
-                <button className="ButtonHead" onClick={()=>{
+                <button className="ButtonHead" onClick={()=>{                     
                     const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-                    const Id_Div_Login = document.getElementById('class_Div_Login')
                     Id_Div_Cadastro.classList.remove('Hide')
+                    const Id_Div_Login = document.getElementById('class_Div_Login')
                     Id_Div_Login.classList.add('Hide')
-                    
                 }}>Cadastro</button>
             </div>
             </>
             }
         </div>
         {user && user.displayName ? <>
-            <div id="Id_Div_form_envio" className='Hide'>
-                <AddPost username={ user.displayName } />
-            </div>               
+            {postando ? <>
+            <div id="Id_Div_form_envio">
+                <AddPost username={ user.displayName } postando={postando} />
+            </div>                   
+            </>:<>
             <div id='Id_Div_Feed' className="feed">
-                
                 {posts.map(({id, post}) => (
-                 
                  <Posts
                      info={db.collection('Users').doc(`${post.userName}`).get()}
                      foto={user.photoURL}
@@ -178,32 +170,38 @@ return (
                      caption={post.caption}
                      imageURL={post.imageURL}
                  />))}
-            </div>    
-
-        </> :
-            <>
-                <div className="UserCred">
-                    <div id="class_Div_Cadastro" className="Hide">
-                        <h1 className="titulo-cadastro">Vamos começar a aventura.</h1>
-                        <form className="signup">
-                            <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
-                            <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
-                            <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                            <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
-                        </form>
-                    </div>
-                    <div id="class_Div_Login">
+            </div>           
+            </>}
+        </>:<>          
+            <div id="class_Div_Login" className="Hide">
+                <form className="signin">
                     <h1 className="titulo">Bem-vindo(a) ao Woofo!</h1>
                     <p className="paragrafo-login">A rede para seu melhor amigo.</p>
-                        <form className="signin">
-                            <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span>&nbsp;</span>
-                            <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                            <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
-                        </form>
-                    </div>
-                </div>
+                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span>&nbsp;</span>
+                    <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                    <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
+                </form>
+            </div>
+            <div id="class_Div_Cadastro" className="Hide">
+                <form className="signup">
+                <h1 className="titulo-cadastro">Vamos começar a aventura.</h1>
+                    <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
+                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
+                    <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                    <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
+                </form>
+            </div>
             </>}
-
+    </>:<>
+    <button onClick={()=>{setHome(true)}}>Inverter</button>
+            <div>   
+                <input type='file' onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
+                <button onClick={MudarAvatar}>Button</button>           
+            </div>
+            <div>
+                <Perfil user={user.displayName} />
+            </div>
+    </>}
     </div>
   )
 }

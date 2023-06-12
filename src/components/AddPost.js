@@ -40,10 +40,9 @@ const AddPost = ({username}) => {
                             caption: caption,
                             imageURL: url,
                             userName: username})
-                        const hide_Id_Form_Div_Envio= document.getElementById('Id_Div_form_envio');
-                        hide_Id_Form_Div_Envio.classList.add('Hide');
-                        const show_Id_Div_feed= document.getElementById('Id_Div_Feed');
-                        show_Id_Div_feed.style.display=''
+                            .then(()=>{
+                                window.location.reload()
+                            })
                         setcaption('');
                         setImage(null);
                         setprogress(0);
