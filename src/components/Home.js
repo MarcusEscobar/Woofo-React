@@ -25,19 +25,14 @@ const Home = () => {
   const [user, setuser] = useState(null)
   const [posts, setPosts] = useState([])
   const [avatar,setavatar] = useState(null)
-  const [postando, setPostando]= useState(false)
   const [home, setHome] = useState(true)
-console.log(user)
+  const [fotoP, setFotoP] = useState('')
 
-db.collection('Users')
+
 const signup = (e) =>{
     e.preventDefault()
     auth.createUserWithEmailAndPassword(email, password)
         .then((authUser)=>{
-            const Id_Div_Login = document.getElementById('class_Div_Login')
-            const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-            Id_Div_Login.classList.add('Hide')
-            Id_Div_Cadastro.classList.add('Hide')
             db.collection("Users").doc(username).set({
                 photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2F2.png?alt=media&token=9c62023a-70bb-406e-aec8-6775151b5b17",
                 nome: username,
@@ -45,15 +40,15 @@ const signup = (e) =>{
             return authUser.user.updateProfile({
                 displayName:username,})
         }).then(()=>{
+            const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+            modal_Cadastro.close()
             window.location.reload()
         }).catch((e)=>alert(e.message))}
 const signin = (e) =>{
     e.preventDefault()
     auth.signInWithEmailAndPassword(email,password).then(()=>{
-        const Id_Div_Login = document.getElementById('class_Div_Login')
-        const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-        Id_Div_Login.classList.add('Hide')
-        Id_Div_Cadastro.classList.add('Hide')})
+        const modal_Login = document.querySelector(".Modal_Login")
+        modal_Login.close()})
     .catch((e)=>alert(e.message))}
 useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
@@ -64,14 +59,13 @@ useEffect(()=>{
     return()=>{
         unsubscribe()};}, [])
 useEffect(()=>{
-    db.collection("posts")
-    .orderBy("timestamp", 'desc').
-    onSnapshot((snapshot)=>{
+    db.collection("posts").orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
         setPosts(
-            snapshot.docs.map((doc)=> ({
+            snapshot.docs.map((doc)=>({
                 id: doc.id,
                 post: doc.data(),
-            })));});},[]);
+            })));
+        });},[]);
 const MudarAvatar=()=>{
     storage.ref(`Avatares/${avatar.name}`).put(avatar).then(()=>{
         console.log('Foto Enviada')
@@ -79,67 +73,84 @@ const MudarAvatar=()=>{
             console.log('Url:', url)
             db.collection('Users').doc(user.displayName).update({
                 photo:url})})})}
+
+
+const irPerfil = ()=>{
+    db.collection('Users').doc(user.displayName).get().then((infoUser)=>{
+        setFotoP(infoUser.data().photo)
+        setHome(false)
+    })
+
+}
+
+
 return (
-    <div className='app'>
+    <div className="HomeBody" >
     {home ? <>
-    <button onClick={()=>{setHome(false)}}>Inverter</button>
+    <button className="Hide" onClick={()=>{setHome(false)}}>Inverter</button>
         <div className='app__header'>
             <div className="div__img">
                 <img
                 src={require('./static/LOGINSmallT.png')}
+                alt="logo"
                 onClick={()=>{window.location.reload()}} />         
             </div>
             {user ? <> {/* User Logado? */}
             <div className="ButtonPost_Div" >
                 <button className="ButtonPost" onClick={()=>{
-                    setPostando(true)
-                    }}>Postar</button>
+                    const modal_Post = document.querySelector(".Modal_Postagem")
+                    modal_Post.showModal()}}>Postar</button>
             </div>
             <div className="User_LogOut_Div" >
-                <p className="WelcomeUser">Bem vindo {user.displayName}</p>
+                <p ></p>
+                <button className="WelcomeUser" onClick={irPerfil} style={{border:'none'}} >Bem vindo {user.displayName}</button>
                 <button className="ButtonHead" onClick={()=>{ 
                     auth.signOut()}} >Logout</button>
             </div>
             </>:<>
             <div>
                 <button className="ButtonHead" onClick={()=>{
-                    const Id_Div_Login = document.getElementById('class_Div_Login')
-                    Id_Div_Login.classList.remove('Hide')
-                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-                    Id_Div_Cadastro.classList.add('Hide')
+                    const modal_Login = document.querySelector(".Modal_Login")
+                    modal_Login.showModal()
                 }}>Login</button>
                     <span>&nbsp;&nbsp;</span>
                 <button className="ButtonHead" onClick={()=>{                     
-                    const Id_Div_Cadastro = document.getElementById('class_Div_Cadastro');
-                    Id_Div_Cadastro.classList.remove('Hide')
-                    const Id_Div_Login = document.getElementById('class_Div_Login')
-                    Id_Div_Login.classList.add('Hide')
+                    const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+                    modal_Cadastro.showModal()
                 }}>Cadastro</button>
             </div>
             </>}
         </div>
         {user && user.displayName ? <>
-            {postando ? <>
-            <div id="Id_Div_form_envio">
-                <AddPost username={ user.displayName } postando={postando} />
-            </div>                   
-            </>:<>
+            <dialog className="Modal_Postagem">
+           
+                <AddPost username={ user.displayName }/>
+                               
+            </dialog>
+            
             <div id='Id_Div_Feed' className="feed">
                 {posts.map(({id, post}) => (
                  <Posts
-                     info={db.collection('Users').doc(`${post.userName}`).get()}
+                     key={id}  
+                     tokenPost = {post.tokenPost}
+                     RefAvatar={db.collection('Users').doc(`${post.userName}`).get()}
+                     refLike={db.collection("posts").doc(post.tokenPost).collection('likes').doc('like').get()}
                      foto={user.photoURL}
-                     key={id}
-                     postId= {id}    
-                     user={user}  
+                     user={user.displayName}  
                      userName={post.userName}
                      caption={post.caption}
                      imageURL={post.imageURL}
                  />))}
             </div>           
-            </>}
-        </>:<>          
-            <div id="class_Div_Login" className="Hide">
+            
+        </>:<>   
+        <div id="centerpoint">
+
+            <dialog className="Modal_Login">
+                <button className="voltar" onClick={()=>{
+                     const modal_Login = document.querySelector(".Modal_Login")
+                     modal_Login.close()
+                }}>voltar</button>
                 <form className="signin">
                     <h1 className="titulo">Bem-vindo(a) ao Woofo!</h1>
                     <p className="paragrafo-login">A rede para seu melhor amigo.</p>
@@ -147,8 +158,12 @@ return (
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
                     <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
                 </form>
-            </div>
-            <div id="class_Div_Cadastro" className="Hide">
+            </dialog> 
+            <dialog className="Modal_Cadastro">
+                <button className="voltar" onClick={()=>{
+                     const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+                     modal_Cadastro.close()
+                }}>voltar</button>
                 <form className="signup">
                 <h1 className="titulo-cadastro">Vamos começar a aventura.</h1>
                     <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
@@ -156,17 +171,23 @@ return (
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
                     <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
                 </form>
-            </div>
+            </dialog>      
+
+        </div>
             </>}
     </>:<>
-    <button onClick={()=>{setHome(true)}}>Inverter</button>
+    <button onClick={()=>{setHome(true)}}>Home</button>
             <div>   
                 <input type='file' onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
                 <button onClick={MudarAvatar}>Button</button>           
             </div>
             <div>
-                <Perfil user={user.displayName} />
+                <Perfil 
+                user={user.displayName} 
+                foto = {fotoP}
+                />
             </div>
+            
     </>}
     </div>
 )}

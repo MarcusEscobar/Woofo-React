@@ -1,28 +1,67 @@
 import React, { useState } from 'react'
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth'
+import 'firebase/compat/storage'
+import 'firebase/compat/firestore'
+import {firebaseConfig} from './config.js'
 
-const Posts = ({ foto, info ,postID, user, userName, caption, imageURL}) => {
+const app = firebase.initializeApp(firebaseConfig);
+const db = app.firestore()
 
-const [photo, setPhoto] = useState("")
-info.then((r)=>{setPhoto(r.data())})
+const Posts = ({ foto, RefAvatar, user, userName, caption, imageURL, refLike, tokenPost,}) => {
+
+const [avatar, setAvatar] = useState("")
+const [quantlike, setQuantlike] = useState(0)
+const [contador, setcontador] = useState(0)
+const [comentario, setComentario] = useState('')
+refLike.then((doc)=>{
+  setQuantlike(doc.data().like)
+})
+const darLike =()=>{
+  db.collection("posts").doc(tokenPost).collection('likes').doc('like').get().then((doc)=>{
+    const lista = doc.data().user
+    const likes = doc.data().like
+    if(lista.includes(user))
+    {setcontador(contador-1)
+      db.collection("posts").doc(tokenPost).collection('likes').doc('like').update({
+        user: lista.filter((elemento)=> elemento !== user),
+        like: likes-1
+      })
+    }
+    else{
+      setcontador(contador+1)
+      lista.push(user)
+      db.collection("posts").doc(tokenPost).collection('likes').doc('like').update({
+        user: lista,
+        like: likes+1
+      })
+    }
+})} 
+
+RefAvatar.then((r)=>{setAvatar(r.data())})
   return (
     <div className='post'>
         <div className='post__header'>
             <img className='avatar'
-            src={photo.photo}
+            src={avatar.photo}
             alt={userName}/>
-            <h3 className='Username'>{userName}</h3>
+            <h3 className='Username'>{userName} </h3>
         </div>
         <img
             className='post__image'
             src={imageURL}
+            alt={tokenPost}
         />
+        <button className='like__Button' onClick={darLike}>{quantlike+contador}</button>
+        {caption !== '' ?<>
         <p className='post__text'>
             <b className='Caption'>{userName} diz:&nbsp;</b>{caption}
         </p>
+        </>:<></>}
+        <br></br>
         <div className='post_comments'>
-            {/*comentarios*/}
+          {/*COMENTARIOS*/}
         </div>
-
     </div>
   )
 }
