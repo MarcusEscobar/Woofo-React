@@ -4,6 +4,7 @@ import 'firebase/compat/auth'
 import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
 import {firebaseConfig} from './config.js'
+import Comment from "./Comment.js"
 
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore()
@@ -13,7 +14,6 @@ const Posts = ({ foto, RefAvatar, user, userName, caption, imageURL, refLike, to
 const [avatar, setAvatar] = useState("")
 const [quantlike, setQuantlike] = useState(0)
 const [contador, setcontador] = useState(0)
-const [comentario, setComentario] = useState('')
 refLike.then((doc)=>{
   setQuantlike(doc.data().like)
 })
@@ -39,6 +39,8 @@ const darLike =()=>{
 })} 
 
 RefAvatar.then((r)=>{setAvatar(r.data())})
+
+
   return (
     <div className='post'>
         <div className='post__header'>
@@ -52,15 +54,22 @@ RefAvatar.then((r)=>{setAvatar(r.data())})
             src={imageURL}
             alt={tokenPost}
         />
+        <div className='post__rodape'>
+
         <button className='like__Button' onClick={darLike}>{quantlike+contador}</button>
         {caption !== '' ?<>
         <p className='post__text'>
-            <b className='Caption'>{userName} diz:&nbsp;</b>{caption}
+            <b className='Caption'>{userName}: &nbsp;</b>{caption}
         </p>
+        <br/>
         </>:<></>}
-        <br></br>
         <div className='post_comments'>
-          {/*COMENTARIOS*/}
+            <Comment
+              tokenPost={tokenPost}
+              user={user}
+            />
+        </div>
+
         </div>
     </div>
   )

@@ -34,7 +34,7 @@ const signup = (e) =>{
     auth.createUserWithEmailAndPassword(email, password)
         .then((authUser)=>{
             db.collection("Users").doc(username).set({
-                photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2F2.png?alt=media&token=9c62023a-70bb-406e-aec8-6775151b5b17",
+                photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2FLogoLogin2.png?alt=media&token=659f0964-4fb8-4d4f-a89a-e1ff11a6a053",
                 nome: username,
                 email: email,})
             return authUser.user.updateProfile({
@@ -89,12 +89,7 @@ return (
     {home ? <>
     <button className="Hide" onClick={()=>{setHome(false)}}>Inverter</button>
         <div className='app__header'>
-            <div className="div__img">
-                <img
-                src={require('./static/LOGINSmallT.png')}
-                alt="logo"
-                onClick={()=>{window.location.reload()}} />         
-            </div>
+                <button className="Button__Woofo" onClick={()=>{window.location.reload()}} >Woofo</button>         
             {user ? <> {/* User Logado? */}
             <div className="ButtonPost_Div" >
                 <button className="ButtonPost" onClick={()=>{
@@ -102,18 +97,17 @@ return (
                     modal_Post.showModal()}}>Postar</button>
             </div>
             <div className="User_LogOut_Div" >
-                <p ></p>
-                <button className="WelcomeUser" onClick={irPerfil} style={{border:'none'}} >Bem vindo {user.displayName}</button>
+                <button className="WelcomeUser" onClick={irPerfil} >{user.displayName}</button>
                 <button className="ButtonHead" onClick={()=>{ 
                     auth.signOut()}} >Logout</button>
             </div>
             </>:<>
-            <div>
+            <div className="Sign__Div" >
                 <button className="ButtonHead" onClick={()=>{
                     const modal_Login = document.querySelector(".Modal_Login")
                     modal_Login.showModal()
                 }}>Login</button>
-                    <span>&nbsp;&nbsp;</span>
+                    <span style={{background: '#2E3351'}}>&nbsp;&nbsp;</span>
                 <button className="ButtonHead" onClick={()=>{                     
                     const modal_Cadastro = document.querySelector(".Modal_Cadastro")
                     modal_Cadastro.showModal()
@@ -174,6 +168,17 @@ return (
             </dialog>      
 
         </div>
+        <div className="Div_Img_Login">
+            <div className="Div_Text_Login">
+                <h1 className="H1_Text_Login">Bem Vindo(a) ao woofo</h1>
+                <p className="P_Text_Login">A Rede para seu melhor amigo!</p>
+            </div>
+            <img
+            className="Img__Login"
+            src={require('./static/LOGIN (1).png')}
+            alt="Logo"
+            />
+        </div>
             </>}
     </>:<>
     <button onClick={()=>{setHome(true)}}>Home</button>
@@ -191,5 +196,6 @@ return (
     </>}
     </div>
 )}
-
 export default Home;
+
+

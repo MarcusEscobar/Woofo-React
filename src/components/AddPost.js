@@ -70,9 +70,9 @@ const AddPost = ({username}) => {
         <br/>
         <input style={{color:'White', border:'none' }} className='file-input' type='file' onChange={(e)=> { if(e.target.files[0]) {setImage(e.target.files[0])} }} />
         <br/>
-        <textarea  style={{color:'White', backgroundColor:'#424669', height:'70px', width:'400px' }} id='filled-basic' label='Caption' onChange={(e)=>{setcaption(e.target.value)}} value={caption} />
+        <textarea className='TextArea__NewPost' placeholder='Adicione uma Legenda'  id='filled-basic' label='Caption' onChange={(e)=>{setcaption(e.target.value)}} value={caption} />
         <br/>
-        <progress style={{width:'400px' }} className='progress' value={progress} max='100' />
+        <progress className='progress' value={progress} max='100' />
         <br/>
         <button style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px'
             , borderRadius:'10px'
