@@ -21,6 +21,11 @@ const comentar = ()=>{
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comment:comment,
         user:user,
+<<<<<<< HEAD
+=======
+    }).then(()=>{
+        db.collection('posts').doc(tokenPost).collection('Comentários').doc(tokenPost+comment).get().then((doc)=>{      })
+>>>>>>> 6b6b93a5e50cb10fe3bf0aa3dd61bdbe2ed20ca8
     })
     setComment('')
 }

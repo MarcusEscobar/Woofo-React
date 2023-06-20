@@ -103,6 +103,7 @@ return (
                     const modal_Post = document.querySelector(".Modal_Postagem")
                     modal_Post.showModal()}}>Postar</button>
             </div>
+<<<<<<< HEAD
             <div className="Coluna_Header_Home">
                 <div className="User_LogOut_Div" >
                     <img className="avatar" 
@@ -113,6 +114,12 @@ return (
                     <button className="WelcomeUser" onClick={()=>{irPerfil(user.displayName)}}>{user.displayName}</button>
                 </div>
                 <button className="ButtonHead" onClick={()=>{auth.signOut()}} >Logout</button>
+=======
+            <div className="User_LogOut_Div" >
+                <button className="WelcomeUser" onClick={irPerfil} >{user.displayName}</button>
+                <button className="ButtonHead" onClick={()=>{ 
+                    auth.signOut()}} >Logout</button>
+>>>>>>> 6b6b93a5e50cb10fe3bf0aa3dd61bdbe2ed20ca8
             </div>
             </>:<>
             <div className="Sign__Div" >
@@ -120,7 +127,11 @@ return (
                     const modal_Login = document.querySelector(".Modal_Login")
                     modal_Login.showModal()
                 }}>Login</button>
+<<<<<<< HEAD
                     <span style={{background: '#473170'}}>&nbsp;&nbsp;</span>
+=======
+                    <span style={{background: '#2E3351'}}>&nbsp;&nbsp;</span>
+>>>>>>> 6b6b93a5e50cb10fe3bf0aa3dd61bdbe2ed20ca8
                 <button className="ButtonHead" onClick={()=>{                     
                     const modal_Cadastro = document.querySelector(".Modal_Cadastro")
                     modal_Cadastro.showModal()
