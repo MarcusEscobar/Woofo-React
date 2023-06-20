@@ -36,43 +36,46 @@ const AddPost = ({username}) => {
                     .getDownloadURL()
                     .then(url=>{
                         const TokenPost=url.substring(url.length-36,url.length)   
-                        const DocRef = db.collection("posts").doc(TokenPost)           
-                        DocRef.set({
-                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                            caption: caption,
-                            imageURL: url,
-                            userName: username,
-                            tokenPost:TokenPost })
-                            .then(()=>{
-                               DocRef.collection('likes').doc('like').set({
-                                like:0,
-                                user: []
-                               }).then(()=>{window.location.reload()})
-                            })
+                        const DocRef = db.collection("posts").doc(TokenPost)
+                        DocRef.collection('likes').doc('like').set({
+                            like:0,
+                            user: []
+                           }).then(()=>{
+                               DocRef.set({
+                                   timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                   caption: caption,
+                                   imageURL: url,
+                                   userName: username,
+                                   tokenPost:TokenPost }).then(()=>{
+                                    db.collection('Users').doc(username).collection('Postagens').doc(TokenPost).set({
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                    caption: caption,
+                                    imageURL: url,
+                                    userName: username,
+                                    tokenPost:TokenPost
+                                }).then(()=>{window.location.reload()})})})})
+                        
                         setcaption('');
                         setImage(null);
                         setprogress(0);
-                    })})
-        setcaption('')
-        setImage(null)
-
-
-    }
+                    })         
+                    setcaption('')
+                    setImage(null)
+                }
   return (
-    <div >
-        <button style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px'
-            , borderRadius:'10px'}} onClick={()=>{
+    <div style={{background:'#2E3351'}} >
+        <button style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px', borderRadius:'10px'}} onClick={()=>{
                 const modal_Post = document.querySelector(".Modal_Postagem")
                 modal_Post.close()}}>voltar</button>
-        <div className='Div_Modal_Post'>
+        <div style={{background:'#2E3351'}} className='Div_Modal_Post'>
 
-        <h2 style={{textAlign:'center', margin:'15px', color:'White' }}>Escolha uma foto</h2>
+        <h2 style={{textAlign:'center', margin:'15px', color:'White', background:'#2E3351' }}>Escolha uma foto</h2>
         <br/>
-        <input style={{color:'White', border:'none' }} className='file-input' type='file' onChange={(e)=> { if(e.target.files[0]) {setImage(e.target.files[0])} }} />
+        <input style={{color:'White', border:'none', background:'#2E3351' }} className='file-input' type='file' onChange={(e)=> { if(e.target.files[0]) {setImage(e.target.files[0])} }} />
         <br/>
-        <textarea  style={{color:'White', backgroundColor:'#424669', height:'70px', width:'400px' }} id='filled-basic' label='Caption' onChange={(e)=>{setcaption(e.target.value)}} value={caption} />
+        <textarea className='TextArea__NewPost' placeholder='Adicione uma Legenda'  id='filled-basic' label='Caption' onChange={(e)=>{setcaption(e.target.value)}} value={caption} />
         <br/>
-        <progress style={{width:'400px' }} className='progress' value={progress} max='100' />
+        <progress className='progress' value={progress} max='100' />
         <br/>
         <button style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px'
             , borderRadius:'10px'

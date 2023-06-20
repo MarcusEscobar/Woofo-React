@@ -27,6 +27,9 @@ const Home = () => {
   const [avatar,setavatar] = useState(null)
   const [home, setHome] = useState(true)
   const [fotoP, setFotoP] = useState('')
+  const [postagensPerfil, setPostagensPerfil] = useState([]) 
+  const [fotoPerfil, setFotoPerfil] = useState('')
+  const [nomePerfil, setNomePerfil] = useState('')
 
 
 const signup = (e) =>{
@@ -34,7 +37,7 @@ const signup = (e) =>{
     auth.createUserWithEmailAndPassword(email, password)
         .then((authUser)=>{
             db.collection("Users").doc(username).set({
-                photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2F2.png?alt=media&token=9c62023a-70bb-406e-aec8-6775151b5b17",
+                photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/images%2FLogoLogin2.png?alt=media&token=659f0964-4fb8-4d4f-a89a-e1ff11a6a053",
                 nome: username,
                 email: email,})
             return authUser.user.updateProfile({
@@ -53,7 +56,9 @@ const signin = (e) =>{
 useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
             if(authuser) {
-                setuser(authuser)}
+             setuser(authuser)
+            db.collection('Users').doc(authuser.displayName).get().then((infoUser)=>{
+                setFotoP(infoUser.data().photo)})}
             else{
                 setuser(null)}})
     return()=>{
@@ -74,14 +79,16 @@ const MudarAvatar=()=>{
             db.collection('Users').doc(user.displayName).update({
                 photo:url})})})}
 
+const irPerfil = (usuario)=>{
+            setNomePerfil(usuario)
+            db.collection('Users').doc(usuario).get().then((infoUser)=>{
+                setHome(false)
+                setFotoPerfil(infoUser.data().photo)})
+            db.collection('Users').doc(usuario).collection('Postagens').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
+                setPostagensPerfil(snapshot.docs.map((doc)=>({
+                    postagens: doc.data()
+                })))})}
 
-const irPerfil = ()=>{
-    db.collection('Users').doc(user.displayName).get().then((infoUser)=>{
-        setFotoP(infoUser.data().photo)
-        setHome(false)
-    })
-
-}
 
 
 return (
@@ -89,31 +96,31 @@ return (
     {home ? <>
     <button className="Hide" onClick={()=>{setHome(false)}}>Inverter</button>
         <div className='app__header'>
-            <div className="div__img">
-                <img
-                src={require('./static/LOGINSmallT.png')}
-                alt="logo"
-                onClick={()=>{window.location.reload()}} />         
-            </div>
+                <button className="Button__Woofo" onClick={()=>{window.location.reload()}} >Woofo</button>         
             {user ? <> {/* User Logado? */}
             <div className="ButtonPost_Div" >
                 <button className="ButtonPost" onClick={()=>{
                     const modal_Post = document.querySelector(".Modal_Postagem")
                     modal_Post.showModal()}}>Postar</button>
             </div>
-            <div className="User_LogOut_Div" >
-                <p ></p>
-                <button className="WelcomeUser" onClick={irPerfil} style={{border:'none'}} >Bem vindo {user.displayName}</button>
-                <button className="ButtonHead" onClick={()=>{ 
-                    auth.signOut()}} >Logout</button>
+            <div className="Coluna_Header_Home">
+                <div className="User_LogOut_Div" >
+                    <img className="avatar" 
+                        onClick={()=>{irPerfil(user.displayName)}}
+                        src={fotoP}
+                        alt="Avatar"
+                    />
+                    <button className="WelcomeUser" onClick={()=>{irPerfil(user.displayName)}}>{user.displayName}</button>
+                </div>
+                <button className="ButtonHead" onClick={()=>{auth.signOut()}} >Logout</button>
             </div>
             </>:<>
-            <div>
+            <div className="Sign__Div" >
                 <button className="ButtonHead" onClick={()=>{
                     const modal_Login = document.querySelector(".Modal_Login")
                     modal_Login.showModal()
                 }}>Login</button>
-                    <span>&nbsp;&nbsp;</span>
+                    <span style={{background: '#473170'}}>&nbsp;&nbsp;</span>
                 <button className="ButtonHead" onClick={()=>{                     
                     const modal_Cadastro = document.querySelector(".Modal_Cadastro")
                     modal_Cadastro.showModal()
@@ -122,10 +129,8 @@ return (
             </>}
         </div>
         {user && user.displayName ? <>
-            <dialog className="Modal_Postagem">
-           
-                <AddPost username={ user.displayName }/>
-                               
+            <dialog style={{background:'#2E3351'}} className="Modal_Postagem">
+                <AddPost username={ user.displayName }/>                 
             </dialog>
             
             <div id='Id_Div_Feed' className="feed">
@@ -140,32 +145,33 @@ return (
                      userName={post.userName}
                      caption={post.caption}
                      imageURL={post.imageURL}
+                     irPerfil= {irPerfil}
                  />))}
             </div>           
             
         </>:<>   
         <div id="centerpoint">
 
-            <dialog className="Modal_Login">
+            <dialog style={{background:'#2E3351'}} className="Modal_Login">
                 <button className="voltar" onClick={()=>{
                      const modal_Login = document.querySelector(".Modal_Login")
                      modal_Login.close()
                 }}>voltar</button>
-                <form className="signin">
-                    <h1 className="titulo">Bem-vindo(a) ao Woofo!</h1>
-                    <p className="paragrafo-login">A rede para seu melhor amigo.</p>
-                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span>&nbsp;</span>
+                <form style={{background:'#2E3351'}} className="signin">
+                    <h1 style={{background:'#2E3351'}} className="titulo">Bem-vindo(a) ao Woofo!</h1>
+                    <p style={{background:'#2E3351'}} className="paragrafo-login">A rede para seu melhor amigo.</p>
+                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span style={{background:'#2E3351'}}>&nbsp;</span>
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
                     <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
                 </form>
             </dialog> 
-            <dialog className="Modal_Cadastro">
-                <button className="voltar" onClick={()=>{
+            <dialog style={{background:'#2E3351'}} className="Modal_Cadastro">
+                <button  className="voltar" onClick={()=>{
                      const modal_Cadastro = document.querySelector(".Modal_Cadastro")
                      modal_Cadastro.close()
                 }}>voltar</button>
-                <form className="signup">
-                <h1 className="titulo-cadastro">Vamos começar a aventura.</h1>
+                <form style={{background:'#2E3351'}} className="signup">
+                <h1 style={{background:'#2E3351'}} className="titulo-cadastro">Vamos começar a aventura.</h1>
                     <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
                     <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
@@ -174,22 +180,52 @@ return (
             </dialog>      
 
         </div>
+        <div className="Div_Img_Login">
+            <div className="Div_Text_Login">
+                <h1 className="H1_Text_Login">Bem Vindo(a) ao woofo</h1>
+                <p className="P_Text_Login">A Rede para seu melhor amigo!</p>
+            </div>
+            <img
+            className="Img__Login"
+            src={require('./static/LOGIN (1).png')}
+            alt="Logo"
+            />
+        </div>
             </>}
     </>:<>
-    <button onClick={()=>{setHome(true)}}>Home</button>
+    <button 
+    style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px', borderRadius:'10px', marginTop: '10px', marginLeft:'10px'}}
+    onClick={()=>{setHome(true)}}>Home Page</button>
+        <dialog>
             <div>   
                 <input type='file' onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
-                <button onClick={MudarAvatar}>Button</button>           
-            </div>
-            <div>
-                <Perfil 
-                user={user.displayName} 
-                foto = {fotoP}
+                <button onClick={MudarAvatar}>Button</button>
+            </div>   
+        </dialog>
+        <div className="Div_Header_Foto_nome">
+            <div className="Div_Header_Perfil">
+                <img className="Foto_Header_Perfil"
+                    src={fotoP}
+                    alt="Avatar"
                 />
             </div>
-            
+            <h1 className="H1_Header">{nomePerfil}</h1>  
+        </div>
+        <div className="Perfil">
+            <div className="Div_Postagens_Perfil">
+                {postagensPerfil.map(({postagens})=>(
+                    <Perfil 
+                    user={postagens.displayName} 
+                    foto = {fotoPerfil}
+                    caption={postagens.caption}
+                    imageURL={postagens.imageURL}
+                    tokenPost = {postagens.tokenPost}
+                    />))}
+            </div>
+        </div>          
     </>}
     </div>
 )}
-
 export default Home;
+
+

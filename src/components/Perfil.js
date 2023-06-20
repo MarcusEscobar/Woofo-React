@@ -1,16 +1,14 @@
 import React from 'react'
 
-const Perfil = ({user, fotoP}) => {
+const Perfil = ({user, fotoP, caption, imageURL, tokenPost}) => {
   return (
-    <div>
-        <p>
-           esse é o perfil de: {user}
-        </p>
-        <img
-          src={fotoP}
-        />
-
-
+    <div className='DivInterna_PostagemPerfil'>
+      <div  className='Div__Postagens__Perfil'>
+          <img
+            src={imageURL}
+            alt='postagens'
+          />
+      </div>
     </div>
   )
 }
