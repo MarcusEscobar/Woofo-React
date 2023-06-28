@@ -7,158 +7,185 @@
   width: 15px;
 }
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px black;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb {
   background: #5d438f;
   border-radius: 10px;
-  border: 1px solid black;
 }
-.app__header {
-  object-fit: contain;
+.Hide{
+  display: none;
+}
+.Barra_lateral {
   display: flex;
-  z-index: 1;
-  padding: 10px;
-  background-color:#473170;
-  border-bottom: 2px solid black  ;
-  margin-bottom: 10px;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-border-right: 1px solid black;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color:#424669;
+  left: 0;
+  width: 200px;
+  height: 100vh;
+  position: fixed;
+
+}
+.main__Home{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+
+}
+.Display__home{
+  display: flex;
+  background-image: url("./components/static/fundoNuvem.jpeg");
+
 }
 .app__signup {
   display: flex;
   flex-direction: column;
 }
-
-.unauth {
-  text-align: center;
-  font-size: x-large;
-  font-weight: bold;
-}
-
 /* posts */
-
-.app__posts {
+.post {
   display: flex;
-  padding-top: 20px;
-  padding-left: 500px;
+  min-height: 600px;
+  max-height: 600px;
+  max-width: 900px;
+  min-width: 900px;
+  border-radius: 10px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  margin-left: 400px;
+  margin-right: 180px;
+  
 }
-
-.app__postleft {
-  margin-left: 10px
+.comment_component{
+  background-color: #4E527B;
+  max-height: 500px;
+  overflow-y: scroll;
+  display: -webkit-box;
+  -webkit-line-clamp: auto;
+  -webkit-box-orient: vertical; 
+  word-break: break-all;
+  margin-left: 10px;
 }
-.post__image {
-  background-color:#2E3351;
-  width: 100%;
-  min-height: 500px;
-  min-width: 500px;
-  object-fit: contain;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+.Div_Direita_Comments{
+  background-color: #4E527B;
+  max-height: 600px;
+  width: auto;
+  display: grid;
+  grid-template-rows: 70px 460px 50px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  
 }
-
+.Div_Esquerda_Image{
+  max-width: 540px ;
+  background-color: #424669;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
 .post__header {
   display: flex;
   align-items: center;
-  padding: 20px;
-  background-color: #5d438f;
-  border-radius: 20px;
 }
-
 .post__avatar {
   margin-right: 10px;
   background-color: #5d438f;
 
 }
+.post__image {
+  margin: 20px;
+  background-color:#363954;
+  width: 100%;
+  max-height: 500px;
+  max-width: 500px;
+  min-height: 500px;
+  min-width: 500px;
+  object-fit: contain;
+}
+
 .post__text {
-  background-color: #5d438f;
-  margin-bottom: -20px;
+  background-color:#424669;
   margin-top: 5px;
   margin-left: 5px;
-  border-radius: 20px;
-  overflow: hidden;
+  max-width: 400px;
+  overflow-y: scroll;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; 
+  word-break: break-all;
+  color: white;
+}
+.comment__text{
+  background-color: #4E527B;
+  word-break: break-all;
+  color: white;
+}
+.Header_Comments{
+  background-color: #4E527B;
+  margin-top: 20px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  border-top-right-radius: 10px;
+}
+.Div_Comments-Input{
+  flex-direction: row;
+  margin-bottom: 20px;
+  width: auto;
+  overflow: hide;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical; 
   word-break: break-all;
 }
-.comment__Button{
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 5px;
-  border-radius: 10px;
-  background-color: #db889f;
-  border: none;
-  color: white;
+.Div_Input_Comment{
+  background-color: #4E527B;
+  display: grid;
+  grid-template-columns: 270px 0px 100px;
+  grid-template-rows: 30px 0px;
+  margin-top: 20px;
+}
+.legenda_e_Like{
+  background-color: #424669;
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: auto 0px 60px;
+  grid-template-rows: 50px 0px;
 }
 .like__Button{
   margin-left: 5px;
   border-radius: 10px;
   width: 35px;
+  height: 35px;
   background-color: #db889f;
   border: none;
   color: white;
 }
+.like__Button_precionado{
+  margin-left: 5px;
+  border-radius: 10px;
+  width: 35px;
+  height: 35px;
+  background-color: #c349aa;
+  border: none;
+  color: white;
+}
 .Caption{
-  background-color: #5d438f;
+  background-color: #424669;
+  color: white;
 }
 .Username{
+  background-color: #4E527B;
   color: white;
-  background-color: #5d438f;
+  margin-left: 10px;
+  font-size: 25px;
+}
 
-}
-.post {
-  background-color: #5d438f;
-  max-width: 500px;
-  min-height: 640px;
-  border: 2px solid black;
-  margin-bottom: 45px;
-  border-radius: 20px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
-}
-.post_comments *{
-  background-color: #5d438f;
-}
-.post__commentbox {
-  display: flex;
-  margin-top: 10px;
-  background-color: #5d438f;
-  border-radius: 20px;
-}
-.post__comments {
-  padding: 20px;
-  display: flex;
-}
-.post__comments *{
-  background-color: #5d438f;
-}
-.post_comments{
-  background-color: #5d438f;
-  border-radius: 20px;
-  padding: 2px;
-}
-.post__rodape{
-  background-color: #5d438f;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-}
+
 
 /* upload */
-
-.imagesupload {
-  display: flex;
-  flex-direction: column;
-  width: 35%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
 .progress {
   width: 100%;
   border: none;
@@ -171,9 +198,7 @@ input[type=file] {
   display: inline-block;
   cursor: pointer;
 }
-.Hide{
-  display: none;
-}
+
 .ButtonHead{
   margin-top: 20px;
   margin-bottom: 20px;
@@ -210,20 +235,15 @@ input[type=file] {
 }
 .InputGeneric{
   border: none;
-  border-left: solid transparent;
-  border-left-color: #db889f;
-  border-width: 4px;
-  height: 100px;
-  width: 500px;
-  background-color: #424669;
-  margin-top: 10px;
-  margin-left: 10px;
+  height: 50px;
+  width: 400px;
+  border-radius: 50px;
+  background-color: white;
   font-size: 20px;
-  color: white
+  color: black;
 }
 .InputGeneric:focus{
-  outline: none;
-  border: 3px solid #db889f;
+ border: none;
 }
 .class_Div_Post{
   display: flex;
@@ -233,18 +253,24 @@ input[type=file] {
 }
 .titulo {
   font-size: 40px;
-  margin-top: 50px;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
   color: white;
 }
 .titulo-cadastro {
-  font-size: 40px;
+  font-size: 35px;
   margin-top: 30px;
+  margin-bottom: 30px;
   color: white;
+  margin-left: 20px;
+  margin-right: 20px;
+
 }
 .paragrafo-login {
   font-size: 24px;
-  margin-bottom: 70px;
+  margin-bottom: 50px;
   color: white;
 }
 
@@ -252,14 +278,16 @@ input[type=file] {
   background-color: #db889f;
   color: white;
   border: none;
-  padding: 15px 70px;
+  width: 125px;
+  height: 35px;
   font-family: Raleway;
-  font-size: 30px;
+  font-size: 20px;
   border-radius: 50px;
   margin-top: 30px;
 }
 .submitButton:hover{
-  background-color: #c349aa
+  background-color: #e47ed0;
+  cursor: pointer;
 }
 .signin{
   display: flex;
@@ -293,13 +321,15 @@ input[type=file] {
   border-radius: 25px;
 }
 .Sign__Div{
-  background-color: #473170;
+  background-image: url("./components/static/fundoNuvem.jpeg");
+  width: 100vw;
+  height: 100vh;
 }
 .WelcomeUser{
   color: white;
   font-size: 20px;
   border: none;
-  background-color: #473170;
+  background-color:#424669;
   font-size: 25px;
 }
 
@@ -344,32 +374,19 @@ input[type=file] {
   flex-direction: column; 
   align-items: center;
 }
-.classFeed{
-  width: 700px;
-  background-color: #5d438f;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 25px;
-}
-.classFeed img{
-  margin: 20px;
-  border:  10px solid #db889f;
-  border-radius: 10px;
-  max-width: 500px;
-  max-height: 500px;
-}
+
 .homepage{
   display: flex;
   flex-direction: column; 
   align-items: center;
 }
 .feed{
-  display: flex;
-  flex-direction: column; 
+  margin: auto;
+  background-image: url("./components/static/fundoNuvem.jpeg");
+  
+  justify-self: center;
   align-items: center;
-
+  
 }
 .avatar{
   width: 40px;
@@ -395,6 +412,29 @@ dialog {
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
   border: none;
   border-radius: 40px;
+}
+
+.Button_Trocar_loginCadastro{
+  background-color: #676f9d;
+  color: white;
+  border: none;
+  font-size: 20px;
+  text-decoration: underline;
+  margin-top: 10px;
+}
+.Button_Trocar_loginCadastro:hover{
+  background-color: #676f9d;
+  color: #db889f;
+  border: none;
+  text-decoration: none;
+}
+.Div_TrocarButton{
+  background-color: #676f9d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 }
 .voltar{
   font-family: Raleway;
@@ -431,14 +471,6 @@ dialog {
   flex-direction: column; 
   align-items: center;
 }
-
-.Div__Comments {
-  background-color: #5d438f;
-  border-radius: 20px;
-}
-.Div__Comments *{
-  background-color: #5d438f;
-}
 .Button_Comentar{
   background-color: #db889f;
   color: white;
@@ -448,17 +480,15 @@ dialog {
   margin-left: 10px;
 }
 .Input__Comment{
+  background-color: #4E527B;
   border: none;
-  width: 400px;
+  width: auto;
   margin-bottom: 10px;
-  margin-left: 5px;
-}
-.Div__CommentDisplay{
   margin-left: 5px;
 }
 .Button__Woofo{
   border: none;
-  background-color: #473170;
+  background-color:#424669;
   font-family: Raleway;
   color: white;
   font-size: 45px;

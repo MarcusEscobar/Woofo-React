@@ -2,8 +2,8 @@ import React from 'react'
 
 const CommentDisplay = ({comentado, user}) => {
   return (
-    <div className='Div__CommentDisplay'>
-        <p><b>{user}:</b> {comentado}</p>
+    <div className='Div_All_comments'>
+        <p className='comment__text'><b  style={{background: '#4E527B'}} >{user}:</b> {comentado}</p>
     </div>
   )
 }

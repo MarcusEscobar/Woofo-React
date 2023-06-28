@@ -46,13 +46,28 @@ const signup = (e) =>{
             const modal_Cadastro = document.querySelector(".Modal_Cadastro")
             modal_Cadastro.close()
             window.location.reload()
-        }).catch((e)=>alert(e.message))}
+        }).catch((e)=>alert(e.message))
+        setEmail('')
+        setPassord('')
+        setusername('')
+        const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+        modal_Cadastro.close()
+        const modal_Login = document.querySelector(".Modal_Login")
+        modal_Login.close()}
+
 const signin = (e) =>{
     e.preventDefault()
     auth.signInWithEmailAndPassword(email,password).then(()=>{
         const modal_Login = document.querySelector(".Modal_Login")
         modal_Login.close()})
-    .catch((e)=>alert(e.message))}
+    .catch((e)=>alert(e.message))
+    setEmail('')
+    setPassord('')
+    const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+    modal_Cadastro.close()
+    const modal_Login = document.querySelector(".Modal_Login")
+    modal_Login.close()
+}
 useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
             if(authuser) {
@@ -89,120 +104,108 @@ const irPerfil = (usuario)=>{
                     postagens: doc.data()
                 })))})}
 
+const trocarCadastro = ()=>{
+    const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+    modal_Cadastro.showModal()
+    const modal_Login = document.querySelector(".Modal_Login")
+    modal_Login.close()
+}
 
+
+const trocarLogin = ()=>{
+    const modal_Cadastro = document.querySelector(".Modal_Cadastro")
+    modal_Cadastro.close()
+    const modal_Login = document.querySelector(".Modal_Login")
+    modal_Login.showModal()
+}
+                    
+                    
 
 return (
-    <div className="HomeBody" >
+
+    <div>
     {home ? <>
-    <button className="Hide" onClick={()=>{setHome(false)}}>Inverter</button>
-        <div className='app__header'>
-                <button className="Button__Woofo" onClick={()=>{window.location.reload()}} >Woofo</button>         
-            {user ? <> {/* User Logado? */}
-            <div className="ButtonPost_Div" >
-                <button className="ButtonPost" onClick={()=>{
-                    const modal_Post = document.querySelector(".Modal_Postagem")
-                    modal_Post.showModal()}}>Postar</button>
-            </div>
-<<<<<<< HEAD
-            <div className="Coluna_Header_Home">
-                <div className="User_LogOut_Div" >
-                    <img className="avatar" 
-                        onClick={()=>{irPerfil(user.displayName)}}
-                        src={fotoP}
-                        alt="Avatar"
-                    />
-                    <button className="WelcomeUser" onClick={()=>{irPerfil(user.displayName)}}>{user.displayName}</button>
+        {user && user.displayName ? <> {/* User Logado? */}
+            <div className="Display__home">
+
+                <div className='Barra_lateral'>
+                    <button className="Button__Woofo" onClick={()=>{window.location.reload()}} >W</button>         
+                        <button className="ButtonPost" onClick={()=>{
+                            const modal_Post = document.querySelector(".Modal_Postagem")
+                            modal_Post.showModal()}}>Postar</button>
+                            <img className="avatar" 
+                                onClick={()=>{irPerfil(user.displayName)}}
+                                src={fotoP}
+                                alt="Avatar"
+                            />
+                            <button className="WelcomeUser" onClick={()=>{irPerfil(user.displayName)}}>{user.displayName}</button>
+                        
+                        <button className="ButtonHead" onClick={()=>{auth.signOut()}} >Logout</button>
+                    
                 </div>
-                <button className="ButtonHead" onClick={()=>{auth.signOut()}} >Logout</button>
-=======
-            <div className="User_LogOut_Div" >
-                <button className="WelcomeUser" onClick={irPerfil} >{user.displayName}</button>
-                <button className="ButtonHead" onClick={()=>{ 
-                    auth.signOut()}} >Logout</button>
->>>>>>> 6b6b93a5e50cb10fe3bf0aa3dd61bdbe2ed20ca8
-            </div>
-            </>:<>
-            <div className="Sign__Div" >
-                <button className="ButtonHead" onClick={()=>{
-                    const modal_Login = document.querySelector(".Modal_Login")
-                    modal_Login.showModal()
-                }}>Login</button>
-<<<<<<< HEAD
-                    <span style={{background: '#473170'}}>&nbsp;&nbsp;</span>
-=======
-                    <span style={{background: '#2E3351'}}>&nbsp;&nbsp;</span>
->>>>>>> 6b6b93a5e50cb10fe3bf0aa3dd61bdbe2ed20ca8
-                <button className="ButtonHead" onClick={()=>{                     
-                    const modal_Cadastro = document.querySelector(".Modal_Cadastro")
-                    modal_Cadastro.showModal()
-                }}>Cadastro</button>
-            </div>
-            </>}
-        </div>
-        {user && user.displayName ? <>
-            <dialog style={{background:'#2E3351'}} className="Modal_Postagem">
-                <AddPost username={ user.displayName }/>                 
-            </dialog>
-            
-            <div id='Id_Div_Feed' className="feed">
-                {posts.map(({id, post}) => (
-                 <Posts
-                     key={id}  
-                     tokenPost = {post.tokenPost}
-                     RefAvatar={db.collection('Users').doc(`${post.userName}`).get()}
-                     refLike={db.collection("posts").doc(post.tokenPost).collection('likes').doc('like').get()}
-                     foto={user.photoURL}
-                     user={user.displayName}  
-                     userName={post.userName}
-                     caption={post.caption}
-                     imageURL={post.imageURL}
-                     irPerfil= {irPerfil}
-                 />))}
-            </div>           
-            
-        </>:<>   
-        <div id="centerpoint">
 
-            <dialog style={{background:'#2E3351'}} className="Modal_Login">
-                <button className="voltar" onClick={()=>{
-                     const modal_Login = document.querySelector(".Modal_Login")
-                     modal_Login.close()
-                }}>voltar</button>
-                <form style={{background:'#2E3351'}} className="signin">
-                    <h1 style={{background:'#2E3351'}} className="titulo">Bem-vindo(a) ao Woofo!</h1>
-                    <p style={{background:'#2E3351'}} className="paragrafo-login">A rede para seu melhor amigo.</p>
-                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span style={{background:'#2E3351'}}>&nbsp;</span>
-                    <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                    <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
-                </form>
-            </dialog> 
-            <dialog style={{background:'#2E3351'}} className="Modal_Cadastro">
-                <button  className="voltar" onClick={()=>{
-                     const modal_Cadastro = document.querySelector(".Modal_Cadastro")
-                     modal_Cadastro.close()
-                }}>voltar</button>
-                <form style={{background:'#2E3351'}} className="signup">
-                <h1 style={{background:'#2E3351'}} className="titulo-cadastro">Vamos começar a aventura.</h1>
-                    <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
-                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
-                    <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                    <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
-                </form>
-            </dialog>      
-
-        </div>
-        <div className="Div_Img_Login">
-            <div className="Div_Text_Login">
-                <h1 className="H1_Text_Login">Bem Vindo(a) ao woofo</h1>
-                <p className="P_Text_Login">A Rede para seu melhor amigo!</p>
+                <div className="main__Home">
+                    <dialog style={{background:'#2E3351'}} className="Modal_Postagem">
+                        <AddPost username={ user.displayName }/>                 
+                    </dialog>
+                    
+                    <div id='Id_Div_Feed' className="feed">
+                        {posts.map(({id, post}) => (
+                        <Posts
+                            key={id}  
+                            tokenPost = {post.tokenPost}
+                            RefAvatar={db.collection('Users').doc(`${post.userName}`).get()}
+                            refLike={db.collection("posts").doc(post.tokenPost).collection('likes').doc('like').get()}
+                            foto={user.photoURL}
+                            user={user.displayName}  
+                            userName={post.userName}
+                            caption={post.caption}
+                            imageURL={post.imageURL}
+                            irPerfil= {irPerfil}
+                        />))}
+                    </div>           
+                </div>
             </div>
+        </>:<>
+        <div className="Sign__Div"></div>
+        <dialog open style={{background:'#676f9d'}} className="Modal_Login">
+            <form style={{background:'#676f9d'}} className="signin">
+                <img
+                style={{background:'#676f9d',height:'60px'}}
+                src={require('./static/Logo Branca.png')}
+                />
+                <h1 style={{background:'#676f9d'}} className="titulo">Bem-vindo(a) ao Woofo!</h1>
+                <p style={{background:'#676f9d'}} className="paragrafo-login">A rede para seu melhor amigo.</p>
+                <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span style={{background:'#676f9b'}}>&nbsp;</span>
+                <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
+                </form>
+                <div className="Div_TrocarButton">
+                    <p style={{background:'#676f9d', color:'white', fontSize:'20px'}} >ainda não tem uma conta?</p>
+                    <button className="Button_Trocar_loginCadastro" onClick={trocarCadastro}>cadastre-se</button>     
+                </div>
+        </dialog>
+            
+        <dialog style={{background:'#676f9d'}} className="Modal_Cadastro">
+            <form style={{background:'#676f9d'}} className="signup">
             <img
-            className="Img__Login"
-            src={require('./static/LOGIN (1).png')}
-            alt="Logo"
-            />
-        </div>
-            </>}
+                style={{background:'#676f9d',height:'60px'}}
+                src={require('./static/Logo Branca.png')}
+                />
+            <h1 style={{background:'#676f9d'}} className="titulo-cadastro">Vamos começar a aventura.</h1>
+                <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
+                <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
+                <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
+            </form>
+            <div className="Div_TrocarButton">
+                <p style={{background:'#676f9d', color:'white', fontSize:'20px'}}>já tem uma conta?</p>
+                <button className="Button_Trocar_loginCadastro" onClick={trocarLogin}>Logar</button>   
+            </div>
+            
+        </dialog> 
+    </>}
+
     </>:<>
     <button 
     style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px', borderRadius:'10px', marginTop: '10px', marginLeft:'10px'}}
