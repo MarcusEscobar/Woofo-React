@@ -6,21 +6,20 @@ import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
 import {firebaseConfig} from './config.js'
 
-
-
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore();
 
-const Comment = ({tokenPost, user}) => {
+const Comment = ({tokenPost, user, userName}) => {
 
 const[comment, setComment] = useState('')
 
 
 const comentar = ()=>{
-    db.collection('posts').doc(tokenPost).collection('Comentários').doc(tokenPost+comment).set({
+    db.collection('posts').doc(tokenPost).collection('Comentários').add({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comment:comment,
         user:user,
+        userName:userName,
     })
     setComment('')
 }

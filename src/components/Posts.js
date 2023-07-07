@@ -11,13 +11,16 @@ import CommentDisplay from './CommentDisplay.js'
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore()
 
-const Posts = ({ foto, RefAvatar, user, userName, caption, imageURL, refLike, tokenPost, irPerfil}) => {
+const Posts = ({ foto, RefUser, user, userEmail, caption, imageURL, refLike, tokenPost, irPerfil}) => {
 
-const [avatar, setAvatar] = useState("")
+const [userData, setUserData] = useState("")
 const [quantlike, setQuantlike] = useState(0)
 const [contador, setcontador] = useState(0)
-const[listaComment, setListaComment] = useState([])
+const [listaComment, setListaComment] = useState([])
 const [listaUsuariosLike, setListaUsuariosLike] = useState([])
+const [boleanFalse, setBolean] = useState(false)
+
+RefUser.then((data)=>{setUserData(data.data())})
 refLike.then((doc)=>{
   setQuantlike(doc.data().like)
   setListaUsuariosLike(doc.data().user)
@@ -29,13 +32,17 @@ const darLike =()=>{
     const likes = doc.data().like
     if(lista.includes(user))
     {setcontador(contador-1)
+      setBolean(false)
+      setListaUsuariosLike([])
       db.collection("posts").doc(tokenPost).collection('likes').doc('like').update({
         user: lista.filter((elemento)=> elemento !== user),
         like: likes-1
-      })
+      }).then(()=>{})
     }
     else{
       setcontador(contador+1)
+      setListaUsuariosLike(doc.data().user)
+      setBolean(true)
       lista.push(user)
       db.collection("posts").doc(tokenPost).collection('likes').doc('like').update({
         user: lista,
@@ -45,7 +52,7 @@ const darLike =()=>{
 })}
 
 
-RefAvatar.then((r)=>{setAvatar(r.data())})
+
 
 useEffect(()=>{
   db.collection('posts').doc(tokenPost).collection('Comentários').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
@@ -64,29 +71,47 @@ useEffect(()=>{
               alt={tokenPost}
           />
           <div className="legenda_e_Like" >
-
             {caption !== '' ?<>
             <p className='post__text'>
-                <b className='Caption'>{userName}: &nbsp;</b>{caption}
+                <b className='Caption'>{userData.nome}: &nbsp;</b>{caption}
             </p>
             <br/>
-            </>:<></>}
-            <button id='like__Button' className="like__Button" onClick={darLike}>{quantlike+contador}</button>
+            </>:<>
+            <div style={{background:'none',}} ></div>
+            </>}
+            <div className="Div_Like" >
+              <p>{quantlike+contador}</p>
+              {listaUsuariosLike.includes(user) || boleanFalse ?<>
+                <img
+                  style={{height:'30px' , background:'none', cursor:'pointer' }}
+                  src={require('./static/LikePrecionado.png')}
+                  alt="like"
+                  onClick={darLike}
+                />
+              </>:<>  
+                <img
+                  style={{height:'30px' , background:'none'}}
+                  src={require('./static/LikeSemPrecionar.png')}
+                  alt="like"
+                  onClick={darLike}
+                />
+              </>}
+            </div>   
           </div>
       </div>
       <div className='Div_Direita_Comments' >
         <div className='Header_Comments'>
           <img className='avatar'
-          onClick={()=>{irPerfil(userName)}}
-          src={avatar.photo}
-          alt={userName}/>
-          <h3 onClick={()=>{irPerfil(userName)}} className='Username'>{userName} </h3>   
+          onClick={()=>{irPerfil(userEmail)}}
+          src={userData.photo}
+          alt={userData.name}/>
+          <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userData.nome} </h3>   
         </div>
         <div className='comment_component'>
-                {listaComment.map(({id, post}) => (<CommentDisplay comentado={post.comment} user={post.user}/>))} 
+                {listaComment.map(({id, post}) => (<CommentDisplay key={id} comentado={post.comment} user={post.user} userName={post.userName}/>))} 
         </div>
         <div className='Div_Comments-Input'>
-          <Comment  tokenPost={tokenPost} user={user}/>
+          <Comment key={user.id}  tokenPost={tokenPost} user={user} userName={userData.nome}/>
         </div>
       </div>
     </div>

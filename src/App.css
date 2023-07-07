@@ -1,34 +1,105 @@
+html{
+  scroll-behavior: smooth;
+}
 * {
   margin: 0;
-  background-color: #160834;
+  background-color: #2C314E;
   font-family: Raleway;
+}
+*:focus {
+  outline: none;
 }
 ::-webkit-scrollbar {
   width: 15px;
 }
 ::-webkit-scrollbar-track {
   border-radius: 10px;
+  background-color: 0;
 }
 ::-webkit-scrollbar-thumb {
-  background: #5d438f;
+  background: #363954;
   border-radius: 10px;
 }
 .Hide{
   display: none;
 }
 .Barra_lateral {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   justify-content: center;
   align-items: center;
   background-color:#424669;
+  box-shadow: 5px 5px 20px black;
   left: 0;
-  width: 200px;
+  width: 100px;
   height: 100vh;
   position: fixed;
-
+  animation-name: fechar;
+  animation-duration: 0.5s;
 }
+.Barra_lateral:hover{
+  animation-name: abrir;
+  animation-duration: 0.5s;
+  width: 250px;
+
+.P_BarraLateral{
+  visibility: visible;
+  background: none;
+  justify-self: center;
+  align-self: center;
+  font-weight: bold;
+  font-size: 25px;
+  color: white;
+  margin-right: 25px;
+}
+.P_Woofo{
+  visibility: visible;
+  background: none;
+  justify-self: center;
+  align-self: center;
+  font-weight: bold;
+  font-size: 35px;
+  color: white;
+  margin-right: 25px;
+}
+
+.P_BarraLateral:hover{
+  color: #e47ed0;
+  text-shadow: 0px 1px 10px #c349aa;
+} 
+.P_Woofo:hover{
+  color: #e47ed0;
+  text-shadow: 0px 1px 10px #c349aa;
+}
+}
+.Elements_Barra_Lateral{
+  background:none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.P_BarraLateral{
+  visibility: hidden;
+  font-size: 0px;
+ 
+}
+.P_Woofo{
+  visibility: hidden;
+  font-size: 0px;
+  text-decoration: none;
+}
+@keyframes abrir{
+  0%{width: 100px;}
+  100%{width: 250px;}
+  
+}
+@keyframes fechar{
+  0%{width: 250px;}
+  100%{width: 100px;}
+}
+
+
 .main__Home{
+  background: none;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -37,9 +108,7 @@
 
 }
 .Display__home{
-  display: flex;
   background-image: url("./components/static/fundoNuvem.jpeg");
-
 }
 .app__signup {
   display: flex;
@@ -47,17 +116,15 @@
 }
 /* posts */
 .post {
+  background: none;
   display: flex;
   min-height: 600px;
   max-height: 600px;
   max-width: 900px;
   min-width: 900px;
+  margin: 100px;
   border-radius: 10px;
-  margin-top: 50px;
-  margin-bottom: 50px;
-  margin-left: 400px;
-  margin-right: 180px;
-  
+  box-shadow: 15px 5px 20px black;
 }
 .comment_component{
   background-color: #4E527B;
@@ -68,6 +135,9 @@
   -webkit-box-orient: vertical; 
   word-break: break-all;
   margin-left: 10px;
+}
+::placeholder{
+  color: white;
 }
 .Div_Direita_Comments{
   background-color: #4E527B;
@@ -154,14 +224,17 @@
   grid-template-columns: auto 0px 60px;
   grid-template-rows: 50px 0px;
 }
-.like__Button{
-  margin-left: 5px;
-  border-radius: 10px;
-  width: 35px;
-  height: 35px;
-  background-color: #db889f;
-  border: none;
+.Div_Like{
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.Div_Like p{
+  background: none;
   color: white;
+  font-size: 15px;
+  font-weight: bold;
 }
 .like__Button_precionado{
   margin-left: 5px;
@@ -176,27 +249,62 @@
   background-color: #424669;
   color: white;
 }
-.Username{
-  background-color: #4E527B;
+progress{
+  background: none;
+  width: 400px;
+  height: 22px;
+}
+progress::-webkit-progress-bar{
+  background-color: white;
+  border-radius: 20px; 
+  box-shadow: 0px 1px 10px rgb(60, 59, 59);
+}
+progress::-webkit-progress-value{
+  background-color: #db889f;
+  border-radius: 20px; 
+  box-shadow: 0px 1px 10px #c349aa;
+}
+
+.Label_InputFile{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+  width: 175px;
+  border-radius: 20px;
+  background-color: #db889f;
   color: white;
-  margin-left: 10px;
-  font-size: 25px;
-}
-
-
-
-/* upload */
-.progress {
-  width: 100%;
-  border: none;
-  width:400px;
-  color: #c349aa;
-}
-
-input[type=file] {
-  font-size: medium;
-  display: inline-block;
   cursor: pointer;
+  margin-bottom: 10px;
+  box-shadow: 0px 1px 10px #c349aa;
+}
+.Label_InputFile:hover{
+  background-color: #e47ed0;
+}
+.NoImg_Button{
+  background-color: #db889f;
+  color: white;
+  border: none;
+  width: 100px;
+  height: 30px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.ComImg_Button{
+  background-color: #db889f;
+  color: white;
+  border: none;
+  width: 100px;
+  height: 30px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.NoImg_Button:hover{
+  background-color: gray;
+}
+.ComImg_Button:hover{
+  background-color: #e47ed0;
+  box-shadow: 0px 1px 10px #c349aa;
 }
 
 .ButtonHead{
@@ -244,6 +352,9 @@ input[type=file] {
 }
 .InputGeneric:focus{
  border: none;
+}
+.InputGeneric::placeholder{
+  color: gray;
 }
 .class_Div_Post{
   display: flex;
@@ -299,28 +410,8 @@ input[type=file] {
   flex-direction: column; 
   align-items: center;
 }
-.Coluna_Header_Home{
-  display: flex;
-  flex-direction: column; 
-  align-items: center;
-  background-color: #473170;
-}
-.User_LogOut_Div{
-  display: flex; 
-  align-items: center;
-  margin-right: 10px;
-  background-color: #473170;
-  margin-left: 40px;
-}
-.ButtonPost_Div{
-  width: 500px;
-  background-color:#473170;
-  display: flex;
-  flex-direction: column; 
-  align-items: center;
-  border-radius: 25px;
-}
-.Sign__Div{
+
+.fundoNuvem{
   background-image: url("./components/static/fundoNuvem.jpeg");
   width: 100vw;
   height: 100vh;
@@ -381,12 +472,7 @@ input[type=file] {
   align-items: center;
 }
 .feed{
-  margin: auto;
-  background-image: url("./components/static/fundoNuvem.jpeg");
-  
-  justify-self: center;
-  align-items: center;
-  
+  background:none;
 }
 .avatar{
   width: 40px;
@@ -394,6 +480,19 @@ input[type=file] {
   border-radius: 100%;
   margin-right: 5px;
   border: 1px solid black;
+  cursor: pointer;
+}
+.Username{
+  background-color: #4E527B;
+  color: white;
+  margin-left: 10px;
+  font-size: 25px;
+  cursor: pointer;
+  height: 2ch;
+  overflow-y: scroll;
+  display: -webkit-box;
+  -webkit-box-orient: vertical; 
+  word-break: break-all;
 }
 
 .Img__Logo{
@@ -409,7 +508,7 @@ dialog {
   -moz-transform: translateX(-50%) translateY(-50%);
   -ms-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 5px 5px 25px black;
   border: none;
   border-radius: 40px;
 }
@@ -421,6 +520,7 @@ dialog {
   font-size: 20px;
   text-decoration: underline;
   margin-top: 10px;
+  cursor: pointer;
 }
 .Button_Trocar_loginCadastro:hover{
   background-color: #676f9d;
@@ -445,31 +545,38 @@ dialog {
   color: white;
   text-align: center;
   cursor: pointer;
-  border-radius: 20%;
+  border-radius: 30px;
+}
+.voltar:hover{
+  background-color: #e47ed0;
+  box-shadow: 0px 1px 10px #c349aa;
 }
 .Modal_Postagem{
   width: 600px;
-  height: 320px;
-  background-color: #160834;
+  height: 330px;
   border: none;
 }
-.Modal_Postagem *{
-  background-color: #160834;
-  
-}
 .TextArea__NewPost{
-  color: white;
-  background-color: #424669;
+  color: black;
+  background-color: white;
   height: 70px;
   width: 400px;
   border: none;
-  border-radius: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 1px 10px rgb(60, 59, 59);
 }
+.TextArea__NewPost::placeholder{
+  text-align:center;
+  color: black;
+  justify-self: center;
+  align-self: center;
 
+}
 .Div_Modal_Post{
   display: flex;
   flex-direction: column; 
   align-items: center;
+  justify-items: center;
 }
 .Button_Comentar{
   background-color: #db889f;
@@ -478,6 +585,7 @@ dialog {
   border-radius: 50px;
   width: 75px;
   margin-left: 10px;
+  cursor: pointer;
 }
 .Input__Comment{
   background-color: #4E527B;
@@ -486,6 +594,7 @@ dialog {
   margin-bottom: 10px;
   margin-left: 5px;
 }
+
 .Button__Woofo{
   border: none;
   background-color:#424669;
@@ -517,32 +626,108 @@ dialog {
 .Img__Login{
   max-width: 800px;
 }
+.ModalPerfil{
+  display: grid;
+  justify-content: center;
+  align-items: end;
+  grid-template-columns: auto;
+  grid-template-rows: 70px 60px 20px 80px;
+  height: 280px;
+  width: 300px;
+}
+.P_ModalPerfil{
+  background: none;
+  color: white;
+  font-size: 25px;
+}
+.P_BioPerfil{
+  margin-top: 10px;
+  max-height: 150px;
+  background:none;
+  color: white;
+  font-size: 20px;
+  overflow-y: scroll;
+  display: -webkit-box;
+  -webkit-box-orient: vertical; 
+  word-break: break-all;
+}
+.P_BioPerfil::-webkit-scrollbar-thumb{
+  background-color: #2C314E;
+}
+
+.Button_ModalPerfil{
+  background-color: #db889f;
+  justify-self: center;
+  width: 130px;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  color: white;
+}
+.Button_ModalPerfil:hover{
+  background-color: #e47ed0;
+  box-shadow: 0px 1px 10px #c349aa;
+}
 .Div_Postagens_Perfil{
-  align-items: center;
-  display: flex;
-  flex-direction:row;
-  flex-wrap: wrap;
+  background: none;
+  display: grid;
+  border-radius: 20px;
 }
 .Div_Postagens_Perfil img{
-  width: 310px;
-  height: 310px;
-  border: 1px solid black;
+  width: 500px;
+  height: 500px;
+  background-color: #363954;
+  object-fit: contain;
+  margin-top: 30px;
+  border: 2px solid #363954;
 }
 .Div_Header_Perfil{
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #473170;
+  background-color: #424669;
   width: 250px;
   margin-left: 100px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 .H1_Header{
-  background-color: #473170;
+  background-color: #424669;
   margin-top: 50px;
   font-size: 50px;
   color: white;
+  height: 2ch;
+  overflow-y: scroll;
+  display: -webkit-box;
+  -webkit-box-orient: vertical; 
+  word-break: break-all;
+}
+.H1_Header::-webkit-scrollbar-thumb{
+  background-color: #424669;
+}
+.Button_EditPerfil{
+  border: none;
+  background-color: #424669;
+  color: white;
+  text-decoration: underline;
+}
+.Div_EditPerfil{
+  display: grid;
+  background: none;
+}
+.ButtonEdit{
+  align-self: center;
+  justify-self: center;
+  width: 170px;
+  height: 30px;
+  border: none;
+  background-color: #db889f;
+  color: white;
+  border-radius: 20px;
+}
+.ButtonEdit:hover{
+  background-color: #e47ed0;
+  box-shadow: 0px 1px 10px #c349aa;
 }
 .Foto_Header_Perfil{
   border-radius: 100%;
@@ -552,29 +737,40 @@ dialog {
   border: 2px solid black;
 }
 .Perfil{
+  background: none;
   display: flex;
   align-items: center;
   flex-direction:column;
 }
+.HeaderPerfil{
+  display: grid;
+  background: none;
+}
+
 .Div_Header_Foto_nome{
+  background: none;
   display: flex;
   flex-direction:row;
   margin-left: 150px;
   margin-right: 150px;
-  margin-top: -5px;
   margin-bottom: 20px;
-  background-color: #473170;
+  margin-top: 30px;
+  background-color: #424669;
   border-radius: 20px;
+  height: 300px;
+  box-shadow: 5px 5px 20px black;
 }
 .DivInterna_PostagemPerfil{
   margin: 10px;
+  background: none;
 }
 .Div__Postagens__Perfil{
-  align-items: center;
-  background-color: #5d438f;
-  width: 350px;
-  height: 350px;
+  background-color: #424669;
+  border-radius: 20px;
+  width: 550px;
+  height: 630px;
   display: flex;
   justify-content: center;
-  border-radius: 20px;
+  margin: 30px;
+  box-shadow: 5px 5px 20px black;
 }
