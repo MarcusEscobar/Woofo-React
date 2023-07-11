@@ -7,18 +7,14 @@ import 'firebase/compat/firestore'
 import AddPost from "./AddPost";
 import Posts from "./Posts";
 import Perfil from './Perfil';
-
 import {firebaseConfig} from './config.js'
-  
-  // Initialize Firebase
+
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth()
 const storage = firebase.storage()
 const db = app.firestore()
 
-
-const Home = () => {
-
+const Home =()=>{
   const [username,setusername] = useState('')
   const [email,setEmail] = useState('')
   const [password,setPassord] = useState('')
@@ -34,7 +30,7 @@ const Home = () => {
   const [novoNome, setNovoNome] = useState('')
   const [novaBio, setNovaBio] = useState('')
 
-const signup = (e) =>{
+function signup(e){
     e.preventDefault()
     auth.createUserWithEmailAndPassword(email, password)
         .then((authUser)=>{
@@ -58,7 +54,7 @@ const signup = (e) =>{
 }
      
 
-const signin = (e) =>{
+function signin(e){
     e.preventDefault()
     auth.signInWithEmailAndPassword(email,password).then(()=>{
         document.querySelector(".Modal_Login").close()})
@@ -76,7 +72,7 @@ useEffect(()=>{
             else{
                 setuser(null)}})
     return()=>{
-        unsubscribe()};}, [])
+        unsubscribe()};},[])
 useEffect(()=>{
     db.collection("posts").orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
         setPosts(
@@ -85,56 +81,57 @@ useEffect(()=>{
                 post: doc.data(),
             })));
         });},[]);
-const MudarAvatar=()=>{
+function MudarAvatar(e){
+    e.preventDefault()
     storage.ref(`Avatares/${avatar.name}`).put(avatar).then(()=>{
-        console.log('Foto Enviada')
         storage.ref("Avatares").child(avatar.name).getDownloadURL().then((url)=>{
             db.collection('Users').doc(user.email).update({
                 photo:url}).then(()=>{irPerfil(user.email);document.querySelector(".Modal_MudarFoto").close()})})})}
 
-const MudarNome=()=>{
-            db.collection('Users').doc(user.email).update({
-                nome:novoNome,
-            }).then(()=>{irPerfil(user.email);document.querySelector(".Modal_MudarNome").close()})}
-const MudarBio=()=>{
+function MudarNome(e){
+    e.preventDefault()
+    db.collection('Users').doc(user.email).update({
+        nome:novoNome,
+    }).then(()=>{irPerfil(user.email);document.querySelector(".Modal_MudarNome").close()})}
+
+function MudarBio(e){
+    e.preventDefault()
     db.collection('Users').doc(user.email).update({
         bio:novaBio,
     }).then(()=>{irPerfil(user.email);document.querySelector(".Modal_MudarBio").close()})}
 
-const irPerfil = (usuario)=>{
-            db.collection('Users').doc(usuario).get().then((infoUser)=>{
-                setHome(false)
-                setFotoPerfil(infoUser.data().photo)
-                setNomePerfil(infoUser.data().nome)
-                setBioPerfil(infoUser.data().bio)
-                setEmailPerfil(infoUser.data().email)})
-            db.collection('Users').doc(usuario).collection('Postagens').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
-                setPostagensPerfil(snapshot.docs.map((doc)=>({
-                    postagens: doc.data()
-                })))})}
+function irPerfil(usuario){
+    const userRef =db.collection('Users').doc(usuario)
+    userRef.get().then((infoUser)=>{
+        setHome(false)
+        setFotoPerfil(infoUser.data().photo)
+        setNomePerfil(infoUser.data().nome)
+        setBioPerfil(infoUser.data().bio)
+        setEmailPerfil(infoUser.data().email)})
+    userRef.collection('Postagens').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
+    setPostagensPerfil(snapshot.docs.map((doc)=>({postagens: doc.data()})))})}
 
-const trocarCadastro = ()=>{
+function trocarCadastro(e){
+    e.preventDefault()
     document.querySelector(".Modal_Cadastro").showModal()
     document.querySelector(".Modal_Login").close()
 }
 
-const trocarLogin = ()=>{
+function trocarLogin(e){
+    e.preventDefault()
     document.querySelector(".Modal_Cadastro").close()
     document.querySelector(".Modal_Login").showModal()
 }
-                    
-                    
-
 return (
     <div>
-        {user && user.displayName ? <> {/* User Logado? */}
+        {user && user.displayName ? <>
             <dialog style={{background:'#676f9d'}} className="Modal_Postagem">
                 <AddPost username={ user.displayName } userEmail={user.email}/>               
             </dialog>
             <div className="Display__home">
                 <div className='Barra_lateral'>
                     <div className="Elements_Barra_Lateral" style={{cursor:'pointer'}} >
-                        <a href="#" style={{background:'none', textDecoration:'none', display:'flex'}}>
+                        <a href="/#" style={{background:'none', textDecoration:'none', display:'flex'}}>
                         <img
                             style={{height:'80px', background:'none'}}
                             src={require('./static/Logo Branca.png')}
@@ -155,7 +152,7 @@ return (
                     <div className="Elements_Barra_Lateral" style={{cursor:'pointer'}}>
                         <img
                             style={{height:'80px', background:'none'}}
-                            src={require('./static/IconeHome.png')}
+                            src={require('./static/post.png')}
                             alt="Logo Woofo"
                             onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}}
                         /><p onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}} className="P_BarraLateral">Postar</p>
@@ -173,7 +170,7 @@ return (
                     <div className="Elements_Barra_Lateral" style={{cursor:'pointer'}}>
                         <img
                             style={{height:'80px', background:'none'}}
-                            src={require('./static/IconeHome.png')}
+                            src={require('./static/logout.png')}
                             alt="Logo Woofo"
                             onClick={()=>{auth.signOut()}}
                         /><p onClick={()=>{auth.signOut()}} className="P_BarraLateral" >Sair</p>
@@ -185,12 +182,11 @@ return (
                             <div id='Id_Div_Feed' className="feed">
                                 {posts.map(({id, post}) => (
                                 <Posts
-                                    key={id}  
+                                    key={id}
                                     tokenPost = {post.tokenPost}
-                                    RefUser={db.collection('Users').doc(`${post.userEmail}`).get()}
-                                    refLike={db.collection("posts").doc(post.tokenPost).collection('likes').doc('like').get()}
                                     foto={user.photoURL}
-                                    user={user.email}  
+                                    user={user.email}
+                                    userLogName={user.displayName}  
                                     userName={post.userName}
                                     userEmail={post.userEmail}
                                     caption={post.caption}

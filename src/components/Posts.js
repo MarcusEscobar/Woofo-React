@@ -11,7 +11,7 @@ import CommentDisplay from './CommentDisplay.js'
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore()
 
-const Posts = ({ foto, RefUser, user, userEmail, caption, imageURL, refLike, tokenPost, irPerfil}) => {
+const Posts = ({user, userLogName, userName, userEmail, caption, imageURL, tokenPost, irPerfil }) => {
 
 const [userData, setUserData] = useState("")
 const [quantlike, setQuantlike] = useState(0)
@@ -20,13 +20,23 @@ const [listaComment, setListaComment] = useState([])
 const [listaUsuariosLike, setListaUsuariosLike] = useState([])
 const [boleanFalse, setBolean] = useState(false)
 
-RefUser.then((data)=>{setUserData(data.data())})
-refLike.then((doc)=>{
-  setQuantlike(doc.data().like)
-  setListaUsuariosLike(doc.data().user)
-})
+useEffect(()=>{
+  db.collection('Users').doc(userEmail).get().then((data)=>{setUserData(data.data())})
+},[]);
+useEffect(()=>{
+  db.collection("posts").doc(tokenPost).collection('likes').doc('like').get().then((doc)=>{
+    setQuantlike(doc.data().like)
+    setListaUsuariosLike(doc.data().user)})
+},[]);
+useEffect(()=>{
+  db.collection('posts').doc(tokenPost).collection('Comentários').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
+      setListaComment(
+          snapshot.docs.map((doc)=>({
+              id: doc.id,
+              post: doc.data(),
+          })))})},[]);
 
-const darLike =()=>{
+function darLike(){
   db.collection("posts").doc(tokenPost).collection('likes').doc('like').get().then((doc)=>{
     const lista = doc.data().user
     const likes = doc.data().like
@@ -51,17 +61,6 @@ const darLike =()=>{
     }
 })}
 
-
-
-
-useEffect(()=>{
-  db.collection('posts').doc(tokenPost).collection('Comentários').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
-      setListaComment(
-          snapshot.docs.map((doc)=>({
-              id: doc.id,
-              post: doc.data(),
-          })))})});
-
   return (
     <div className='post'>
       <div className='Div_Esquerda_Image'>
@@ -73,7 +72,7 @@ useEffect(()=>{
           <div className="legenda_e_Like" >
             {caption !== '' ?<>
             <p className='post__text'>
-                <b className='Caption'>{userData.nome}: &nbsp;</b>{caption}
+                <b className='Caption'>{userName}: &nbsp;</b>{caption}
             </p>
             <br/>
             </>:<>
@@ -104,14 +103,14 @@ useEffect(()=>{
           <img className='avatar'
           onClick={()=>{irPerfil(userEmail)}}
           src={userData.photo}
-          alt={userData.name}/>
-          <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userData.nome} </h3>   
+          alt={userData.nome}/>
+          <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userName} </h3>   
         </div>
         <div className='comment_component'>
-                {listaComment.map(({id, post}) => (<CommentDisplay key={id} comentado={post.comment} user={post.user} userName={post.userName}/>))} 
+                {listaComment.map(({id, post}) => (<CommentDisplay key={id} comentado={post.comment} userName={post.userName}/>))} 
         </div>
         <div className='Div_Comments-Input'>
-          <Comment key={user.id}  tokenPost={tokenPost} user={user} userName={userData.nome}/>
+          <Comment key={user.id}  tokenPost={tokenPost} user={user} userName={userLogName}/>
         </div>
       </div>
     </div>

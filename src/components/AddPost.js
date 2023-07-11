@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
-
 import {firebaseConfig} from './config.js'
-  
-  // Initialize Firebase
+
 const app = firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage()
 const db = app.firestore()
@@ -16,7 +14,7 @@ const AddPost = ({username, userEmail}) => {
     const [progress,setprogress] = useState(0)
     const [image,setImage] = useState(null)
 
-    const handleUpload = ()=>{
+    function Upload(){
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
             "state_changed",(snapshot)=>{
@@ -81,7 +79,7 @@ const AddPost = ({username, userEmail}) => {
         <br/>
         {image !== null?<>
             <button className='ComImg_Button' style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px',borderRadius:'10px'
-        }} onClick={handleUpload} >Postar</button>
+        }} onClick={Upload} >Postar</button>
         </>:<>
             <button className='NoImg_Button'>Postar</button>
         </>}

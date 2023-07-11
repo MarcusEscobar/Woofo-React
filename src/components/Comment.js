@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
-import {useState} from "react";
+import React, { useState } from "react";
 import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth'
-import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
 import {firebaseConfig} from './config.js'
 
@@ -10,11 +7,8 @@ const app = firebase.initializeApp(firebaseConfig);
 const db = app.firestore();
 
 const Comment = ({tokenPost, user, userName}) => {
-
 const[comment, setComment] = useState('')
-
-
-const comentar = ()=>{
+function comentar(){
     db.collection('posts').doc(tokenPost).collection('Comentários').add({
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         comment:comment,
@@ -23,7 +17,6 @@ const comentar = ()=>{
     })
     setComment('')
 }
-
   return (
     <div style={{background: '#4E527B'}}>
         <div className="Div_Input_Comment">
