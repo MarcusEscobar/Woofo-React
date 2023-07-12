@@ -155,7 +155,7 @@ return (
                             src={require('./static/post.png')}
                             alt="Logo Woofo"
                             onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}}
-                        /><p onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}} className="P_BarraLateral">Postar</p>
+                        /><p onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}}className="P_BarraLateral">Postar</p>
                     </div>
 
                     <div className="Elements_Barra_Lateral" style={{cursor:'pointer'}}>
@@ -216,7 +216,7 @@ return (
                     <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarFoto">
                             <button className="voltar" onClick={()=>{document.querySelector(".Modal_MudarFoto").close()}} >voltar</button>
                         <div style={{background:'none' ,height:'200px' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}} >
-                            <input type='file' id="inputAvatar" style={{display:'none'}} onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
+                            <input type='file' accept='image/*' id="inputAvatar" style={{display:'none'}} onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
                             <label className='Label_InputFile' style={{height:'40px'}} htmlFor="inputAvatar">Escolha uma foto</label>
                             {avatar !== null?<><p style={{background:'none', color:'white'}} >Imagem selecionada: {avatar.name}</p>
                             <button className="Button_ModalPerfil" style={{height:'30px', marginTop:'20px'}} onClick={MudarAvatar}>Alterar foto</button>
@@ -267,11 +267,8 @@ return (
                             {postagensPerfil.map(({postagens})=>(
                                 <Perfil 
                                 key={postagens.tokenPost}
-                                username={postagens.userName}
-                                userEmail={postagens.userEmail} 
                                 caption={postagens.caption}
                                 imageURL={postagens.imageURL}
-                                tokenPost = {postagens.tokenPost}
                                 />))}
                         </div>
                     </div>     

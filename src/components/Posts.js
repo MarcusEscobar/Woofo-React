@@ -68,7 +68,7 @@ function darLike(){
               className='post__image'
               src={imageURL}
               alt={tokenPost}
-          />
+              />
           <div className="legenda_e_Like" >
             {caption !== '' ?<>
             <p className='post__text'>
@@ -98,19 +98,35 @@ function darLike(){
             </div>   
           </div>
       </div>
+      
       <div className='Div_Direita_Comments' >
+        
         <div className='Header_Comments'>
           <img className='avatar'
           onClick={()=>{irPerfil(userEmail)}}
           src={userData.photo}
           alt={userData.nome}/>
-          <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userName} </h3>   
+          <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userName} </h3>
+        {user === userEmail ?<><button 
+        style={{  background:'none',border:'none', color:'white', fontSize:'30px', height:'30px',}} onClick={()=>{document.getElementById(tokenPost).style.display='block'}} >...</button>
+        </>:<></>}
         </div>
+        
         <div className='comment_component'>
                 {listaComment.map(({id, post}) => (<CommentDisplay key={id} comentado={post.comment} userName={post.userName}/>))} 
         </div>
         <div className='Div_Comments-Input'>
           <Comment key={user.id}  tokenPost={tokenPost} user={user} userName={userLogName}/>
+        </div>
+      </div>
+      <div className="Options_Post" id={tokenPost} >
+        <button style={{background:'none',width:'100px', textAlign:'end', border:'none', borderRadius:'10px', fontWeight:'bold', color:'white'}} onClick={()=>{document.getElementById(tokenPost).style.display='none'}} >x</button>
+        <div style={{display:'flex', justifyContent:'center', alignItems:'center', background:'none'}} >
+          <button className="Button_ExcluirPost" onClick={()=>{
+            db.collection('posts').doc(tokenPost).delete().then(()=>{db.collection('posts').doc(tokenPost).delete()})
+            db.collection('Users').doc(userEmail).collection('Postagens').doc(tokenPost).delete()
+            document.getElementById(tokenPost).style.display='none'
+          }} >Excluir Post</button>
         </div>
       </div>
     </div>

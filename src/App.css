@@ -126,6 +126,24 @@ html{
   border-radius: 10px;
   box-shadow: 15px 5px 20px black;
 }
+.Options_Post{
+  display: none;
+  background-color: #4E527B;
+  align-self: start;
+  margin-top: 20px;
+  margin-left: 5px;
+  border-radius: 10px;
+  height: 65px;
+  box-shadow: 1px 2px 10px black;
+}
+.Button_ExcluirPost{
+  background-color: #db889f;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  margin-top: 5px;
+  height: 20px;
+}
 .comment_component{
   background-color: #4E527B;
   max-height: 500px;
@@ -179,7 +197,7 @@ html{
   background-color:#424669;
   margin-top: 5px;
   margin-left: 5px;
-  max-width: 400px;
+  max-width: 500px;
   overflow-y: scroll;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -193,6 +211,7 @@ html{
   color: white;
 }
 .Header_Comments{
+  
   background-color: #4E527B;
   margin-top: 20px;
   margin-left: 10px;
@@ -264,22 +283,26 @@ progress::-webkit-progress-value{
   border-radius: 20px; 
   box-shadow: 0px 1px 10px #c349aa;
 }
-
+.picture_image {
+  background-color:#363954;
+  width: 100%;
+  max-height: 400px;
+  max-width: 400px;
+  min-height: 400px;
+  min-width: 400px;
+  object-fit: contain;
+}
 .Label_InputFile{
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 30px;
-  width: 175px;
-  border-radius: 20px;
-  background-color: #db889f;
+  height: 400px;
+  width: 400px;
+  background-color: #4E527B;
   color: white;
   cursor: pointer;
   margin-bottom: 10px;
-  box-shadow: 0px 1px 10px #c349aa;
-}
-.Label_InputFile:hover{
-  background-color: #e47ed0;
+  border: 2px dashed currentcolor; 
 }
 .NoImg_Button{
   background-color: #db889f;
@@ -489,6 +512,7 @@ progress::-webkit-progress-value{
   font-size: 25px;
   cursor: pointer;
   height: 2ch;
+  width: 250px;
   overflow-y: scroll;
   display: -webkit-box;
   -webkit-box-orient: vertical; 
@@ -552,8 +576,8 @@ dialog {
   box-shadow: 0px 1px 10px #c349aa;
 }
 .Modal_Postagem{
-  width: 600px;
-  height: 330px;
+  width: 500px;
+  height: 650px;
   border: none;
 }
 .TextArea__NewPost{
@@ -586,6 +610,18 @@ dialog {
   width: 75px;
   margin-left: 10px;
   cursor: pointer;
+}
+.Button_Comentar_Vazio{
+  background-color: #db889f;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  width: 75px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.Button_Comentar_Vazio:hover{
+  background-color: gray;
 }
 .Input__Comment{
   background-color: #4E527B;
@@ -765,10 +801,12 @@ dialog {
   background: none;
 }
 .Div__Postagens__Perfil{
+  display: flex;
+  flex-direction: column;
   background-color: #424669;
   border-radius: 20px;
   width: 550px;
-  height: 630px;
+  height: 600px;
   display: flex;
   justify-content: center;
   margin: 30px;

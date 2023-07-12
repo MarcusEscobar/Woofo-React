@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/storage'
 import 'firebase/compat/firestore'
@@ -13,8 +13,10 @@ const AddPost = ({username, userEmail}) => {
     const [caption,setcaption] = useState('')
     const [progress,setprogress] = useState(0)
     const [image,setImage] = useState(null)
+    const [labelFile, setLabelFile] = useState('')
 
     function Upload(){
+        setLabelFile('')
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
         uploadTask.on(
             "state_changed",(snapshot)=>{
@@ -63,15 +65,44 @@ const AddPost = ({username, userEmail}) => {
                     setcaption('')
                     setImage(null)
                     setprogress(0)}
+
+
+useEffect(()=>{
+    if(image){
+        const reader = new FileReader();
+        reader.addEventListener("load", function (e) {
+          const readerTarget = e.target;
+          setLabelFile('');
+          setLabelFile(readerTarget.result);
+        });
+
+        reader.readAsDataURL(image);
+      } else {
+        setLabelFile('');
+      }
+},[image]);    
   return (
     <div style={{background:'#676f9d'}} >
-        <button style={{color:'White', backgroundColor:'rgb(219, 136, 159)', border:'none', width:'100px', height:'30px', borderRadius:'10px', cursor:'pointer'}} onClick={()=>{
-                  document.querySelector(".Modal_Postagem").close()}}>voltar</button>
+        <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer'}} onClick={()=>{
+            document.querySelector(".Modal_Postagem").close()
+            setcaption('');setImage(null);setprogress(0);setLabelFile('')}}>x</button>
         <div style={{background:'#676f9d'}} className='Div_Modal_Post'>
         <br/>
-        <input style={{display:'none'}} id='file-input' className='file-input' type='file' onChange={(e)=> { if(e.target.files[0]) {setImage(e.target.files[0])} }} />
-        <label className='Label_InputFile'  htmlFor="file-input">Escolha uma foto</label>
-        {image !== null?<><p style={{background:'none', color:'white'}} >Imagem selecionada: {image.name}</p></>:<></>}
+        <input style={{display:'none'}} id='file-input' className='file-input' type='file' accept='image/*' onChange={(e)=> { if(e.target.files[0]){setImage(e.target.files[0])}}}/>
+        {labelFile ? <>
+            <label className='Label_InputFile' htmlFor="file-input" onClick={()=>{setcaption(''); setImage(null); setprogress(0);}}>
+                <img className='picture_image'
+                    src={labelFile}
+                    alt='escolha uma foto'
+                />
+            </label>
+        </>:<>
+        <label className='Label_InputFile' htmlFor="file-input" onClick={()=>{
+            setcaption('');
+            setImage(null);
+            setprogress(0);
+        }} >Escolha uma imagem</label>
+        </>}
         <br/>
         <textarea className='TextArea__NewPost' placeholder='Adicione uma Legenda'  id='filled-basic' label='Caption' onChange={(e)=>{setcaption(e.target.value)}} value={caption} />
         <br/>
