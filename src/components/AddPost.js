@@ -8,7 +8,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const storage = firebase.storage()
 const db = app.firestore()
 
-const AddPost = ({username, userEmail}) => {
+const AddPost = ({username, userEmail, attPerfil}) => {
     
     const [caption,setcaption] = useState('')
     const [progress,setprogress] = useState(0)
@@ -55,7 +55,7 @@ const AddPost = ({username, userEmail}) => {
                                     userName: username,
                                     userEmail: userEmail,
                                     tokenPost:TokenPost,
-                                }).then(()=>{document.querySelector(".Modal_Postagem").close()
+                                }).then(()=>{document.querySelector(".Modal_Postagem").close(); attPerfil(userEmail);
                             setcaption('');
                             setImage(null);
                             setprogress(0);})})})})
@@ -83,9 +83,11 @@ useEffect(()=>{
 },[image]);    
   return (
     <div style={{background:'#676f9d'}} >
-        <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer'}} onClick={()=>{
-            document.querySelector(".Modal_Postagem").close()
-            setcaption('');setImage(null);setprogress(0);setLabelFile('')}}>x</button>
+        <div style={{ display:'flex',justifyContent:'end', background:'none'}} >
+            <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{
+                document.querySelector(".Modal_Postagem").close()
+                setcaption('');setImage(null);setprogress(0);setLabelFile('')}}>x</button>
+        </div>
         <div style={{background:'#676f9d'}} className='Div_Modal_Post'>
         <br/>
         <input style={{display:'none'}} id='file-input' className='file-input' type='file' accept='image/*' onChange={(e)=> { if(e.target.files[0]){setImage(e.target.files[0])}}}/>

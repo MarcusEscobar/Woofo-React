@@ -15,6 +15,7 @@ const storage = firebase.storage()
 const db = app.firestore()
 
 const Home =()=>{
+    
   const [username,setusername] = useState('')
   const [email,setEmail] = useState('')
   const [password,setPassord] = useState('')
@@ -29,6 +30,7 @@ const Home =()=>{
   const [avatar,setavatar] = useState(null)
   const [novoNome, setNovoNome] = useState('')
   const [novaBio, setNovaBio] = useState('')
+  const [labelAvatar, setLabelAvatar]= useState('')
 
 function signup(e){
     e.preventDefault()
@@ -81,6 +83,22 @@ useEffect(()=>{
                 post: doc.data(),
             })));
         });},[]);
+
+useEffect(()=>{
+    if(avatar){
+        const reader = new FileReader();
+        reader.addEventListener("load", function (e) {
+            const readerTarget = e.target;
+            setLabelAvatar('');
+            setLabelAvatar(readerTarget.result);
+        });
+
+        reader.readAsDataURL(avatar);
+        } else {
+            setLabelAvatar('');
+        }
+},[avatar]); 
+
 function MudarAvatar(e){
     e.preventDefault()
     storage.ref(`Avatares/${avatar.name}`).put(avatar).then(()=>{
@@ -111,6 +129,16 @@ function irPerfil(usuario){
     userRef.collection('Postagens').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
     setPostagensPerfil(snapshot.docs.map((doc)=>({postagens: doc.data()})))})}
 
+function attPerfil(usuario){
+    const userRef =db.collection('Users').doc(usuario)
+    userRef.get().then((infoUser)=>{
+        setFotoPerfil(infoUser.data().photo)
+        setNomePerfil(infoUser.data().nome)
+        setBioPerfil(infoUser.data().bio)
+        setEmailPerfil(infoUser.data().email)})
+    userRef.collection('Postagens').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
+    setPostagensPerfil(snapshot.docs.map((doc)=>({postagens: doc.data()})))})}
+
 function trocarCadastro(e){
     e.preventDefault()
     document.querySelector(".Modal_Cadastro").showModal()
@@ -126,7 +154,7 @@ return (
     <div>
         {user && user.displayName ? <>
             <dialog style={{background:'#676f9d'}} className="Modal_Postagem">
-                <AddPost username={ user.displayName } userEmail={user.email}/>               
+                <AddPost username={ user.displayName } userEmail={user.email} attPerfil={attPerfil}/>               
             </dialog>
             <div className="Display__home">
                 <div className='Barra_lateral'>
@@ -197,31 +225,64 @@ return (
                         </div>
                     </>:<><div className="fundoNuvem"></div></>}
                 </>:<>
+                    <dialog className="ModalEditPerfil" style={{width:'250px', height:'200px', backgroundColor:'#676f9d'}}>
+                        <div className="Div_EditPerfil">
+                            <div style={{ display:'flex',justifyContent:'end', background:'none', marginBottom:'15px'}} >
+                                <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{document.querySelector(".ModalEditPerfil").close()}}>x</button>
+                            </div>
+                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarBio").showModal(); setNovaBio('')}}>Alterar Bio</button><br/>
+                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarNome").showModal(); setNovoNome('')}}>Alterar Nome</button><br/>
+                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarFoto").showModal(); setavatar(null)}}>Alterar foto de Perfil</button>
+                        </div>
+                    </dialog>
+
                     <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarBio">
-                            <button className="voltar" onClick={()=>{document.querySelector(".Modal_MudarBio").close()}} >voltar</button> 
+
+                        <div style={{ display:'flex',justifyContent:'end', background:'none'}} >
+                            <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{document.querySelector(".Modal_MudarBio").close()}}>x</button>
+                        </div>
                         <div style={{background:'none' ,height:'200px' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
                             <textarea placeholder="Insira uma Biografia" className='TextArea__NewPost' style={{width:'250px'}} value={novaBio} onChange={(e)=> {setNovaBio(e.target.value) }} />
-                            <button className="Button_ModalPerfil" style={{height:'30px', marginTop:'20px'}} onClick={MudarBio}>Alterar Bio</button>
+                            <button className="Button_ModalPerfil" style={{height:'30px', marginTop:'20px', cursor:'pointer'}} onClick={MudarBio}>Alterar Bio</button>
                         </div>   
                     </dialog>
-                    <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarNome">
-                            <button className="voltar" onClick={()=>{document.querySelector(".Modal_MudarNome").close()}} >voltar</button>
-                        <div style={{background:'none' ,height:'200px' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
-                            <textarea placeholder="Insira uma Nome" className='TextArea__NewPost' style={{width:'250px', marginBottom:'20px'}} value={novoNome} onChange={(e)=> {setNovoNome(e.target.value) }} />
-                            {novoNome!==''?<>
-                                <button className="Button_ModalPerfil" style={{height:'30px'}} onClick={MudarNome}>Alterar Nome</button>
-                            </>:<></>}
-                        </div>   
-                    </dialog>
-                    <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarFoto">
-                            <button className="voltar" onClick={()=>{document.querySelector(".Modal_MudarFoto").close()}} >voltar</button>
-                        <div style={{background:'none' ,height:'200px' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}} >
-                            <input type='file' accept='image/*' id="inputAvatar" style={{display:'none'}} onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
-                            <label className='Label_InputFile' style={{height:'40px'}} htmlFor="inputAvatar">Escolha uma foto</label>
-                            {avatar !== null?<><p style={{background:'none', color:'white'}} >Imagem selecionada: {avatar.name}</p>
-                            <button className="Button_ModalPerfil" style={{height:'30px', marginTop:'20px'}} onClick={MudarAvatar}>Alterar foto</button>
-                            </>:<></>}
 
+                    <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarNome">
+                        <div style={{ display:'flex',justifyContent:'end', background:'none'}} >
+                            <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{document.querySelector(".Modal_MudarNome").close()}}>x</button>
+                        </div>
+                        <div style={{background:'none' ,height:'200px' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+                            <textarea placeholder="Insira uma Nome" className='TextArea__NewPost' style={{width:'250px', marginBottom:'20px',}} value={novoNome} onChange={(e)=> {setNovoNome(e.target.value) }} />
+                            {novoNome!==''?<>
+                                <button className="Button_ModalPerfil" style={{height:'30px',cursor:'pointer'}} onClick={MudarNome}>Alterar Nome</button>
+                            </>:<></>}
+                        </div>   
+                    </dialog>
+
+                    <dialog style={{width:'500px' , height:'550px', background:'#676f9d'}} className="Modal_MudarFoto">
+
+                        <div style={{ display:'flex',justifyContent:'end', background:'none'}} >
+                            <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{document.querySelector(".Modal_MudarFoto").close()}}>x</button>
+                        </div>
+                        <div style={{background:'none' , display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}} >
+                            <input type='file' accept='image/*' id="inputAvatar" style={{display:'none'}} onChange={(e)=> { if(e.target.files[0]) {setavatar(e.target.files[0])} }} />
+                            {labelAvatar ? <>
+                                    <label className='Label_InputFile_avatar' htmlFor="inputAvatar" onClick={()=>{setavatar(null);}}>
+                                        <img className='picture_image'
+                                            style={{borderRadius:'100%'}}
+                                            src={labelAvatar}
+                                            alt='escolha uma foto'
+                                        />
+                                    </label>
+                                </>:<>
+                                <label className='Label_InputFile_avatar' htmlFor="inputAvatar" onClick={()=>{
+                                    setavatar(null);
+                                    
+                                }} >Escolha uma imagem</label>
+                                </>}
+                            {avatar !== null?<>
+                            <button className="Button_ModalPerfil" style={{height:'30px', marginTop:'20px', cursor:'pointer'}} onClick={MudarAvatar}>Alterar foto</button>
+                            </>:<></>}
                         </div>   
                     </dialog>
                 {postagensPerfil[0]?<>
@@ -235,7 +296,7 @@ return (
                             </div>
                             {emailPerfil === user.email?<>
                                 <div style={{display:'flex', flexDirection:'column', background:'none'}}>
-                                    <div style={{background:'none', maxWidth:'70ch', height:'280px'}} >
+                                    <div style={{background:'none', maxWidth:'70ch', height:'245px'}} >
                                         <h1 className="H1_Header">{nomePerfil}</h1>
                                         <p className="P_BioPerfil" >{bioPerfil}</p>
                                     </div>
@@ -253,16 +314,7 @@ return (
                             </>}
                         </div>
                     </div>
-                    <dialog className="ModalEditPerfil" style={{width:'250px', height:'200px', backgroundColor:'#676f9d'}}>
-                        <div className="Div_EditPerfil">
-                            <button className="voltar" onClick={()=>{document.querySelector(".ModalEditPerfil").close()}} >voltar</button><br/>
-                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarBio").showModal(); setNovaBio('')}}>Alterar Bio</button><br/>
-                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarNome").showModal(); setNovoNome('')}}>Alterar Nome</button><br/>
-                            <button className="ButtonEdit" onClick={()=>{document.querySelector(".Modal_MudarFoto").showModal(); setavatar(null)}}>Alterar foto de Perfil</button>
-                        </div>
-                    </dialog>
                     <div className="Perfil">
-                    
                         <div className="Div_Postagens_Perfil">
                             {postagensPerfil.map(({postagens})=>(
                                 <Perfil 
@@ -273,19 +325,45 @@ return (
                         </div>
                     </div>     
                 </>:<>
-                    <div className="fundoNuvem">
-                        <dialog open style={{background:'#676f9d', alignSelf:'center', justifySelf:'center,', }} className="ModalPerfil">
-                            <div style={{display:'flex', alignItems:'center', justifyContent:'center',background:'none'}} >
-                                <img
-                                style={{background:'none',height:'60px'}}
-                                src={require('./static/Logo Branca.png')}
-                                alt="Logo"/>
+                <div className="HeaderPerfilvazio">
+                        <div className="Div_Header_Foto_nome">
+                            <div className="Div_Header_Perfil">
+                                <img className="Foto_Header_Perfil"
+                                    src={fotoPerfil}
+                                    alt="Avatar"
+                                />
                             </div>
-                            <p className="P_ModalPerfil" >Seu perfil está vazio,</p>
-                            <p className="P_ModalPerfil" >faça uma postagem</p>
-                            <button className="Button_ModalPerfil" onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}} >Postar</button>
-                        </dialog>
+                            {emailPerfil === user.email?<>
+                                <div style={{display:'flex', flexDirection:'column', background:'none'}}>
+                                    <div style={{background:'none', maxWidth:'70ch', height:'245px'}} >
+                                        <h1 className="H1_Header">{nomePerfil}</h1>
+                                        <p className="P_BioPerfil" >{bioPerfil}</p>
+                                    </div>
+                                    <div style={{height:'10px', background:'none'}} >
+                                        <button className="Button_EditPerfil" onClick={()=>{document.querySelector(".ModalEditPerfil").showModal()}}>Editar perfil</button>
+                                    </div>
+                                </div>
+                            </>:<>
+                                <div style={{display:'flex', flexDirection:'column', background:'none'}}>
+                                    <div style={{background:'none', maxWidth:'70ch', height:'280px'}} >
+                                        <h1 className="H1_Header">{nomePerfil}</h1>
+                                        <p className="P_BioPerfil" >{bioPerfil}</p>
+                                    </div>
+                                </div>
+                            </>}
+                        </div>
                     </div>
+                    <dialog open style={{background:'#676f9d', alignSelf:'center', justifySelf:'center,', marginTop:'150px' }} className="ModalPerfil">
+                        <div style={{display:'flex', alignItems:'center', justifyContent:'center',background:'none'}} >
+                            <img
+                            style={{background:'none',height:'60px'}}
+                            src={require('./static/Logo Branca.png')}
+                            alt="Logo"/>
+                        </div>
+                        <p className="P_ModalPerfil" >Seu perfil está vazio,</p>
+                        <p className="P_ModalPerfil" >faça uma postagem</p>
+                        <button className="Button_ModalPerfil" onClick={()=>{document.querySelector(".Modal_Postagem").showModal()}} >Postar</button>
+                    </dialog>
                 </>}
                 </>}
             </div>

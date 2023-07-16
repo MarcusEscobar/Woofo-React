@@ -22,19 +22,21 @@ const [boleanFalse, setBolean] = useState(false)
 
 useEffect(()=>{
   db.collection('Users').doc(userEmail).get().then((data)=>{setUserData(data.data())})
-},[]);
+},[userEmail]);
+
 useEffect(()=>{
   db.collection("posts").doc(tokenPost).collection('likes').doc('like').get().then((doc)=>{
     setQuantlike(doc.data().like)
     setListaUsuariosLike(doc.data().user)})
-},[]);
+},[tokenPost]);
+
 useEffect(()=>{
   db.collection('posts').doc(tokenPost).collection('Comentários').orderBy("timestamp", 'desc').onSnapshot((snapshot)=>{
       setListaComment(
           snapshot.docs.map((doc)=>({
               id: doc.id,
               post: doc.data(),
-          })))})},[]);
+          })))})},[tokenPost]);
 
 function darLike(){
   db.collection("posts").doc(tokenPost).collection('likes').doc('like').get().then((doc)=>{
@@ -86,10 +88,11 @@ function darLike(){
                   src={require('./static/LikePrecionado.png')}
                   alt="like"
                   onClick={darLike}
+                  
                 />
               </>:<>  
                 <img
-                  style={{height:'30px' , background:'none'}}
+                  style={{height:'30px' , background:'none', cursor:'pointer'}}
                   src={require('./static/LikeSemPrecionar.png')}
                   alt="like"
                   onClick={darLike}
@@ -108,7 +111,7 @@ function darLike(){
           alt={userData.nome}/>
           <h3 onClick={()=>{irPerfil(userEmail)}} className='Username'>{userName} </h3>
         {user === userEmail ?<><button 
-        style={{  background:'none',border:'none', color:'white', fontSize:'30px', height:'30px',}} onClick={()=>{document.getElementById(tokenPost).style.display='block'}} >...</button>
+        style={{  background:'none',border:'none', color:'white', fontSize:'30px', height:'30px', cursor:'pointer'}} onClick={()=>{document.getElementById(tokenPost).style.display='block'}} >...</button>
         </>:<></>}
         </div>
         
@@ -120,7 +123,7 @@ function darLike(){
         </div>
       </div>
       <div className="Options_Post" id={tokenPost} >
-        <button style={{background:'none',width:'100px', textAlign:'end', border:'none', borderRadius:'10px', fontWeight:'bold', color:'white'}} onClick={()=>{document.getElementById(tokenPost).style.display='none'}} >x</button>
+        <button style={{background:'none',width:'100px', textAlign:'end', border:'none', borderRadius:'10px', fontWeight:'bold', color:'white',cursor:'pointer'}} onClick={()=>{document.getElementById(tokenPost).style.display='none'}} >x</button>
         <div style={{display:'flex', justifyContent:'center', alignItems:'center', background:'none'}} >
           <button className="Button_ExcluirPost" onClick={()=>{
             db.collection('posts').doc(tokenPost).delete().then(()=>{db.collection('posts').doc(tokenPost).delete()})
