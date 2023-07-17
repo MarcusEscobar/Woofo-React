@@ -15,6 +15,7 @@ const AddPost = ({username, userEmail, attPerfil}) => {
     const [image,setImage] = useState(null)
     const [labelFile, setLabelFile] = useState('')
 
+
     function Upload(){
         setLabelFile('')
         const uploadTask = storage.ref(`images/${image.name}`).put(image);
@@ -70,7 +71,7 @@ const AddPost = ({username, userEmail, attPerfil}) => {
 useEffect(()=>{
     if(image){
         const reader = new FileReader();
-        reader.addEventListener("load", function (e) {
+        reader.addEventListener("load", function (e){
           const readerTarget = e.target;
           setLabelFile('');
           setLabelFile(readerTarget.result);

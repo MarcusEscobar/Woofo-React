@@ -88,7 +88,7 @@ html{
   text-decoration: none;
 }
 @keyframes abrir{
-  0%{width: 100px;}
+  0%{width: 125px;}
   100%{width: 250px;}
   
 }
@@ -120,14 +120,13 @@ html{
 .post {
   background: none;
   display: flex;
-  min-height: 600px;
-  max-height: 600px;
-  max-width: 900px;
-  min-width: 900px;
+  height: 600px;
+  width: 900px;
   margin: 100px;
   border-radius: 10px;
   box-shadow: 15px 5px 20px black;
 }
+
 .Options_Post{
   display: none;
   background-color: #4E527B;
@@ -434,7 +433,7 @@ progress::-webkit-progress-value{
   font-family: Raleway;
   font-size: 20px;
   border-radius: 50px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 .submitButton:hover{
   background-color: #e47ed0;
@@ -563,6 +562,15 @@ dialog {
   margin-top: 10px;
   cursor: pointer;
 }
+.hovertext{
+  display: none;
+}
+.Error_X:hover{
+  border: none;
+.hovertext{
+  display: block;
+}
+}
 .Button_Trocar_loginCadastro:hover{
   background-color: #676f9d;
   color: #db889f;
@@ -596,7 +604,17 @@ dialog {
   width: 500px;
   height: 650px;
   border: none;
+  animation-name: abrirModalPostagem;
+  animation-duration: 0.2s;
 }
+@keyframes abrirModalPostagem{
+  0%{height: 100px; width: 100px;}
+  100%{height: 650px; width: 500px;}
+}
+.Modal_Postagem::-webkit-scrollbar-thumb {
+  background:none;  
+}
+
 .TextArea__NewPost{
   color: black;
   background-color: white;
@@ -773,6 +791,25 @@ dialog {
 .Div_EditPerfil{
   display: grid;
   background: none;
+}
+.ModalEditPerfil{
+  animation: abrirModalEditPerfil;
+  animation-duration: 0.1s;
+}
+.ModalEditPerfil::-webkit-scrollbar-thumb {
+  background: none;  
+}
+@keyframes abrirModalEditPerfil{
+  0%{width: 50px; height: 40px;}
+  100%{width: 250px; height: 200px;}
+}
+.Modal_MudarFoto{
+  animation: Modal_MudarFoto;
+  animation-duration: 0.1s;
+}
+@keyframes Modal_MudarFoto{
+  0%{width: 250px; height: 200px;}
+  100%{width: 500px; height: 550px;}
 }
 .ButtonEdit{
   align-self: center;

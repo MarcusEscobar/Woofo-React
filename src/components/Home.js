@@ -31,41 +31,47 @@ const Home =()=>{
   const [novoNome, setNovoNome] = useState('')
   const [novaBio, setNovaBio] = useState('')
   const [labelAvatar, setLabelAvatar]= useState('')
+  const [erroBolean, setErroBoluan]= useState(false)
+  const [erroValue, setErroValue]= useState('')
+
 
 function signup(e){
     e.preventDefault()
     auth.createUserWithEmailAndPassword(email, password)
         .then((authUser)=>{
+            document.querySelector(".Modal_Cadastro").close()
+            document.querySelector(".Modal_Login").close()
+            setHome(true)
+            setEmail('')
+            setPassord('')
+            setusername('')
+            setErroBoluan(false)
+            setErroValue('')
             db.collection("Users").doc(email).set({
                 photo: "https://firebasestorage.googleapis.com/v0/b/woof0-75c1f.appspot.com/o/Avatares%2FLogoLogin2.png?alt=media&token=8bbf58a5-deca-4874-9d68-e5a43975a747",
                 bio:'Olá, eu estou na Woofo!! E esse é  meu perfil.',
                 nome: username,
                 email: email,})
             return authUser.user.updateProfile({
-                displayName:username,
-            })
-        }).then(()=>{document.querySelector(".Modal_Cadastro").close()
-            window.location.reload()
-        }).catch((e)=>{alert(e.message); window.location.reload()})
-        setEmail('')
-        setPassord('')
-        setusername('')
-        document.querySelector(".Modal_Cadastro").close()
-        document.querySelector(".Modal_Login").close()
-        setHome(true)
+                displayName:username,})
+        }).then(()=>{window.location.reload()
+        }).catch((e)=>{setErroBoluan(true);setErroValue(e.message)})
+        
 }
      
 
 function signin(e){
     e.preventDefault()
     auth.signInWithEmailAndPassword(email,password).then(()=>{
-        document.querySelector(".Modal_Login").close()})
-    .catch((e)=>{alert(e.message);window.location.reload()})
-    setEmail('')
-    setPassord('')
-    document.querySelector(".Modal_Cadastro").close()
-    document.querySelector(".Modal_Login").close()
-    setHome(true)
+        document.querySelector(".Modal_Cadastro").close()
+        document.querySelector(".Modal_Login").close()
+        setEmail('')
+        setPassord('')
+        setHome(true)
+        setErroBoluan(false)
+        setErroValue('')
+        })
+    .catch((e)=>{setErroBoluan(true);setErroValue(e.message)})  
 }
 useEffect(()=>{
         const unsubscribe = auth.onAuthStateChanged((authuser)=>{
@@ -143,17 +149,27 @@ function trocarCadastro(e){
     e.preventDefault()
     document.querySelector(".Modal_Cadastro").showModal()
     document.querySelector(".Modal_Login").close()
+    setEmail('')
+    setPassord('')
+    setusername('')
+    setErroBoluan(false)
+    setErroValue('')
 }
 
 function trocarLogin(e){
     e.preventDefault()
     document.querySelector(".Modal_Cadastro").close()
     document.querySelector(".Modal_Login").showModal()
+    setEmail('')
+    setPassord('')
+    setusername('')
+    setErroBoluan(false)
+    setErroValue('')
 }
 return (
     <div>
         {user && user.displayName ? <>
-            <dialog style={{background:'#676f9d'}} className="Modal_Postagem">
+            <dialog  style={{background:'#676f9d'}} className="Modal_Postagem">
                 <AddPost username={ user.displayName } userEmail={user.email} attPerfil={attPerfil}/>               
             </dialog>
             <div className="Display__home">
@@ -237,7 +253,6 @@ return (
                     </dialog>
 
                     <dialog style={{width:'300px' , height:'250px', background:'#676f9d'}} className="Modal_MudarBio">
-
                         <div style={{ display:'flex',justifyContent:'end', background:'none'}} >
                             <button style={{color:'white', fontWeight:'bold', fontSize:'25px', background:'none', border:'none', width:'30px', height:'30px', cursor:'pointer',}} onClick={()=>{document.querySelector(".Modal_MudarBio").close()}}>x</button>
                         </div>
@@ -378,10 +393,18 @@ return (
                     />
                     <h1 style={{background:'#676f9d'}} className="titulo">Bem-vindo(a) ao Woofo!</h1>
                     <p style={{background:'#676f9d'}} className="paragrafo-login">A rede para seu melhor amigo.</p>
-                    <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/><span style={{background:'#676f9b'}}>&nbsp;</span>
+                    <input placeholder='Email' type="email" className="InputGeneric"  value={email} onChange={(e)=> { setEmail(e.target.value) }}></input>     
+                    <br/><span style={{background:'#676f9b'}}>&nbsp;</span>
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
-                    <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
-                    </form>
+                    <div className="Error_X" style={{background:'none', display:'flex',flexDirection:'column'  ,alignItems:'center', justifyContent:'center'}} >
+                        {erroBolean ? <>
+                            <dialog open style={{marginTop:'120px', background:'#f73d56', color:'white', border:'solid 1px white'}} class="hovertext" >{erroValue}</dialog>
+                            <div style={{background:'#f73d56',border:'solid 1px white' ,height:'50px', width:'50px', borderRadius:'100%', display:'flex', alignItems:'center', justifyContent:'center',}}
+                            ><p style={{background:'none', fontSize:'25px', fontWeight:'bold', color:'white'}} >X</p>  </div>
+                        </>:<></>}
+                    </div>
+                        <button type="submit" className="submitButton" onClick={signin}>Entrar!</button>
+                </form>
                     <div className="Div_TrocarButton">
                         <p style={{background:'#676f9d', color:'white', fontSize:'20px'}} >ainda não tem uma conta?</p>
                         <button className="Button_Trocar_loginCadastro" onClick={trocarCadastro}>cadastre-se</button>     
@@ -399,6 +422,13 @@ return (
                     <input placeholder='Nome' type="text" className="InputGeneric" value={username} onChange={(e)=> { setusername(e.target.value) }} ></input><br/>
                     <input placeholder='Email' type="email" className="InputGeneric" value={email} onChange={(e)=> { setEmail(e.target.value) }} ></input><br/>
                     <input placeholder='Senha' type="password" className="InputGeneric" value={password} onChange={(e)=> { setPassord(e.target.value) }} ></input><br/>
+                    <div className="Error_X" style={{background:'none', display:'flex',flexDirection:'column'  ,alignItems:'center', justifyContent:'center'}} >
+                        {erroBolean ? <>
+                            <dialog open style={{marginTop:'120px', background:'#f73d56', color:'white', border:'solid 1px white'}} class="hovertext" >{erroValue}</dialog>
+                            <div style={{background:'#f73d56',border:'solid 1px white' ,height:'50px', width:'50px', borderRadius:'100%', display:'flex', alignItems:'center', justifyContent:'center',}}
+                            ><p style={{background:'none', fontSize:'25px', fontWeight:'bold', color:'white'}} >X</p>  </div>
+                        </>:<></>}
+                    </div>
                     <button type="submit" className="submitButton" onClick={signup}>Cadastrar!</button>
                 </form>
                 <div className="Div_TrocarButton">
